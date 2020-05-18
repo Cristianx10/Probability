@@ -2,6 +2,10 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import Firebase from "./constants/firebase/firebase";
+
+
+
 function App() {
   return (
     <div className="App">
