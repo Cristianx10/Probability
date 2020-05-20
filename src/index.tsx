@@ -2,7 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App/App';
 import * as serviceWorker from './serviceWorker';
+import Artyom from './constants/artyom.js/artyom';
+
 import "./index.scss";
+
+
 
 ReactDOM.render(
   <App />

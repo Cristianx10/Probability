@@ -8,14 +8,17 @@ import { CJSContainer } from '../../../../constants/createjs/createjsContainer';
 import CJSShape from '../../../../constants/createjs/createjsShape';
 import { create } from 'domain';
 import { Graphics } from 'createjs-module';
+import MConteo_Caso from '../../../../constants/probabilidad/conteo/MConteo_Caso';
 
-class Puerta implements ICJSAlignContainer {
+class Puerta implements ICJSAlignContainer, MConteo_Caso {
 
     global: TS_MontyHall;
     container = new CJSContainer();
     f = new CJSShape();
 
-    g = new createjs.Graphics();
+    favorable = false;
+    quees = "Puerta";
+    name = "Auto";
 
 
     constructor(global: TS_MontyHall) {
@@ -94,6 +97,9 @@ class Puerta implements ICJSAlignContainer {
         puerta.getState("cerrada");
 
 
+        var premio = this.f.create("premio", new createjs.Shape(), this.container) as createjs.Shape;
+        premio.graphics.beginFill(this.favorable ? "green" : "red").drawCircle(x + (width/2), y + (height/2), width*.3);
+        premio.visible = false;
 
 
 

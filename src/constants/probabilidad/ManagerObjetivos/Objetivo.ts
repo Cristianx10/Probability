@@ -10,8 +10,10 @@ class Objetivo {
         this.level = level;
     }
 
+}
 
-
+export interface IObjetivos {
+    getObjetivos: (() => Objetivo[]);
 }
 
 export default Objetivo;
