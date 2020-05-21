@@ -5,11 +5,15 @@ import * as serviceWorker from './serviceWorker';
 import Artyom from './constants/artyom.js/artyom';
 
 import "./index.scss";
+import { Provider } from 'react-redux';
+import Store from './redux/Store';
 
 
 
 ReactDOM.render(
-  <App />
+  <Provider store={Store}>
+    <App />
+  </Provider>
   , document.getElementById('root')
 );
 

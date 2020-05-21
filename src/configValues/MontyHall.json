@@ -1,8 +1,9 @@
 {
-    "puertas":[
+    "puertas": [
         {
-            "favorable":true
-        }
+            "favorable": true
+        },
+        {},
+        {}
     ]
-    
 }

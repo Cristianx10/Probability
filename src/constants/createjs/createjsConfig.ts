@@ -1,25 +1,35 @@
-import * as createjs from 'createjs-module';
+import { Stage, Shape, Container, DisplayObject, Graphics } from 'createjs-module';
+
 import { ICJSIsConteiner } from './createjsContainer';
+
+import CJSSceneManager from './Scene/createjsSceneManager';
 
 class createjsConfig {
 
-    stage: createjs.Stage;
+    STATIC_CANVAS_BOUNDS = { width: 0, height: 0 };
+    VALUE_BACKGROUND: string = "white";
+
+    private background = new Shape();
+    container = new Container();
+
+    stage: Stage;
     canvas: HTMLCanvasElement;
     HTMLContainer?: HTMLElement;
-    STATIC_CANVAS_BOUNDS = { width: 0, height: 0 };
-    background = new createjs.Shape();
+
+    scene = new CJSSceneManager(this);
 
     constructor() {
         this.canvas = document.createElement("canvas");
-        this.stage = new createjs.Stage(this.canvas);
+        this.stage = new Stage(this.canvas);
+        this.stage.addChild(this.background, this.container);
         this.stage.enableMouseOver();
-        this.addChild(this.background);
     }
 
     size(width: number, height: number) {
         this.canvas.width = width;
         this.canvas.height = height;
         this.stage.setBounds(0, 0, width, height);
+        this.container.setBounds(0, 0, width, height);
         this.STATIC_CANVAS_BOUNDS = { width, height };
     }
 
@@ -31,33 +41,62 @@ class createjsConfig {
 
         div.appendChild(this.canvas);
 
+        this.drawBackground();
 
-        this.background.graphics.beginFill("#FCC65B")
-            .rect(0, 0, this.canvas.width, this.canvas.height);
-
+        /*
         this.resizeResponsive();
         window.addEventListener("resize", () => {
             this.resizeResponsive();
         })
+        */
     }
 
-    addChild(...children: createjs.DisplayObject[] | ICJSIsConteiner[]) {
+    addChild(...children: DisplayObject[] | ICJSIsConteiner[]) {
 
-        children.forEach((c: createjs.DisplayObject | ICJSIsConteiner) => {
-            if((c as ICJSIsConteiner).getContainer != null){
-                this.stage.addChild((c as ICJSIsConteiner).getContainer());
-            }else{
-                this.stage.addChild((c as createjs.DisplayObject));
+        children.forEach((c: DisplayObject | ICJSIsConteiner) => {
+            if ((c as ICJSIsConteiner).getContainer != null) {
+                this.container.addChild((c as ICJSIsConteiner).getContainer());
+            } else {
+                this.container.addChild((c as DisplayObject));
             }
         });
+    }
 
+    removeChild(...children: DisplayObject[] | ICJSIsConteiner[]) {
+
+        children.forEach((c: DisplayObject | ICJSIsConteiner) => {
+            if ((c as ICJSIsConteiner).getContainer != null) {
+                this.container.removeChild((c as ICJSIsConteiner).getContainer());
+            } else {
+                this.container.removeChild((c as DisplayObject));
+            }
+        });
+    }
+
+    removeAllChildren() {
+        this.container.removeAllChildren();
+    }
+
+    setBackground(value: string) {
+        this.VALUE_BACKGROUND = value;
+        this.drawBackground();
+    }
+
+    private drawBackground() {
+        var { x, y, width, height } = this.stage.getBounds();
+        this.background.graphics.beginFill(this.VALUE_BACKGROUND)
+            .rect(x, y, width, height);
     }
 
     update() {
         this.stage.update();
     }
 
-    distribuir(graphis: createjs.Graphics, nContainers: number, width: number, height: number) {
+    getBounds() {
+        return this.stage.getBounds();
+    }
+
+    distribuir(graphis: Graphics, nContainers: number, width: number, height: number) {
 
         const widthTotal = this.canvas.width;
         const heightTotal = this.canvas.height;
@@ -119,12 +158,12 @@ class createjsConfig {
     resizeResponsive() {
 
         var width = document.documentElement.clientWidth;
-        var height = document.documentElement.clientHeight;
+        //var height = document.documentElement.clientHeight;
 
         // Simple "fit-to-screen" scaling
-        var ratio = this.canvas.width / this.canvas.height; // Use the "default" size of the content you have.
+        //var ratio = this.canvas.width / this.canvas.height; // Use the "default" size of the content you have.
 
-        var windowRatio = width / height;
+        //var windowRatio = width / height;
 
         var scale = width / this.canvas.width;
 

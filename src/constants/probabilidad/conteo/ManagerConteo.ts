@@ -1,5 +1,3 @@
-import MConteo_Favorable from './MConteo_Favorable';
-import MConteo_Posible from './MConteo_Posible';
 import MConteo_Caso from './MConteo_Caso';
 
 class ManagerConteo {
@@ -8,6 +6,10 @@ class ManagerConteo {
 
     constructor() {
         this.casos = [];
+    }
+
+    updateAction(accion: string) {
+        
     }
 
     calcularProbabilidad() {
@@ -19,6 +21,7 @@ class ManagerConteo {
     }
 
     addCaso(caso: MConteo_Caso) {
+        caso.mConteo = this;
         this.casos.push(caso);
     }
 

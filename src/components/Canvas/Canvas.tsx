@@ -1,4 +1,4 @@
-import React, { useEffect, createRef } from "react";
+import React, { useEffect, useRef } from "react";
 import createjsConfig from '../../constants/createjs/createjsConfig';
 import "./Canvas.scss";
 
@@ -8,7 +8,7 @@ interface ICanvas {
 
 const Canvas = (props: ICanvas) => {
 
-    const container = createRef<HTMLDivElement>();
+    const container = useRef<HTMLDivElement | any>();
 
     useEffect(() => {
         if (container != null) {

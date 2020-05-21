@@ -1,3 +1,5 @@
+
+
 /**
  * Artyom.js is a voice control, speech recognition and speech synthesis JavaScript library.
  *
@@ -10,9 +12,14 @@
  * @see http://docs.ourcodeworld.com/projects/artyom-js
  */
 
+
 /// <reference path="artyom.d.ts" />
 // Remove "export default " keywords if willing to build with `npm run artyom-build-window`
 export default class Artyom {
+
+    eliminarDiacriticos(texto: any) {
+        return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    }
     /**
      * Stores an object with all the available (or desired) voices for WebkitSpeechSynthesis
      */
@@ -334,6 +341,8 @@ export default class Artyom {
     //@ts-ignore
     execute(voz): MatchedCommand {
         let _this = this;
+
+        voz = this.eliminarDiacriticos(voz);
 
         if (!voz) {
             console.warn("Internal error: Execution of empty command");

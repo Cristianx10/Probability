@@ -1,3 +1,4 @@
+import { Graphics } from 'createjs-module';
 export interface ICJSGetBounds {
     getBounds(): { x: number, y: number, width: number, height: number };
 }
@@ -6,9 +7,10 @@ export interface ICJSAlignContainer {
     setTransform(x: number, y: number, width: number, height: number): void;
 }
 
-export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignContainer[], width: number | string, height: number) => {
+export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignContainer[], width: number | string, height: number, config?: { padding?: number, graphics?: Graphics }) => {
 
     var b = base.getBounds();
+
     var nContainers = objects.length;
 
     const widthTotal = b.width;
@@ -17,13 +19,12 @@ export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignCon
     const padding = 50;
 
     if ((width + "").includes("%")) {
-        let w = parseInt(width + "")/100;
+        let w = parseInt(width + "") / 100;
         width = Math.floor((widthTotal * w));
     } else {
         width = parseInt(width + "");
     }
 
-    console.log("My width", width, widthTotal)
     var seccionesX = Math.floor(widthTotal / width);
     var seccionesY = Math.floor(heightTotal / height);
 
@@ -34,7 +35,7 @@ export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignCon
 
 
     var seccionSpaceY = seccionesY > nItemVerical ? nItemVerical : seccionesY;
-    console.log(seccionSpaceY)
+
     var spaceY = (heightTotal - (height * seccionSpaceY)) / (seccionSpaceY + 1);
 
 
@@ -51,15 +52,17 @@ export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignCon
         cx += spaceX;
 
 
-        object.setTransform(cx, cy, width, height);
-        /*
-                graphis
-                    .beginFill("red")
-                    .rect(cx + pad, cy + pad, width - padding, height - padding)
-                    .endFill()
-                    .beginStroke("black")
-                    .rect(cx, cy, width, height);
-        */
+        object.setTransform(cx + pad, cy, width - padding, height);
+
+        if (config && config.graphics) {
+            config.graphics
+                .beginFill("red")
+                .rect(cx + pad, cy, width - padding, height)
+                .endFill()
+                .beginStroke("black")
+                .rect(cx, cy, width, height);
+        }
+
         if ((countIndex + 1) === seccionesX) {
             cy += height + spaceY;
             cx = 0;

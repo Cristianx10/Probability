@@ -1,35 +1,38 @@
 
 import * as createjs from 'createjs-module';
 
-import { ICJSAlignContainer } from '../../../../constants/createjs/createjsAlignContainer';
+import { create } from 'domain';
 
-import TS_MontyHall from './TS_MontyHall';
+import { Graphics } from 'createjs-module';
+
+import { ICJSAlignContainer } from '../../../../constants/createjs/createjsAlignContainer';
 import { CJSContainer } from '../../../../constants/createjs/createjsContainer';
 import CJSShape from '../../../../constants/createjs/createjsShape';
-import { create } from 'domain';
-import { Graphics } from 'createjs-module';
 import MConteo_Caso from '../../../../constants/probabilidad/conteo/MConteo_Caso';
+
+import TS_MontyHall from './TS_MontyHall';
+import CJSScene from '../../../../constants/createjs/Scene/createjsScene';
 
 class Puerta implements ICJSAlignContainer, MConteo_Caso {
 
-    global: TS_MontyHall;
     container = new CJSContainer();
     f = new CJSShape();
 
     favorable = false;
     quees = "Puerta";
-    name = "Auto";
+    name = "Cabra";
 
+    scene: CJSScene;
 
-    constructor(global: TS_MontyHall) {
-        this.global = global;
+    constructor(scene: CJSScene) {
+        this.scene = scene;
+
+        this.scene.addChild(this.container);
 
         this.container.setBackground("#F6F6F6");
-        this.global.addChild(this.container);
-        this.global.update();
 
         this.f.create("puerta", new createjs.Shape(), this.container);
-        this.f.create("signo", new createjs.Text("?", "200px arial"), this.container);
+        this.f.create("signo", new createjs.Text("?", "150px arial"), this.container);
 
 
         this.mouseEvent();
@@ -41,21 +44,26 @@ class Puerta implements ICJSAlignContainer, MConteo_Caso {
         this.container.on("mouseover", () => {
             if (puerta.stateIDUse != "abierta") {
                 puerta.getState("sobre");
-                this.global.update();
+                this.scene.update();
             }
         });
 
         this.container.on("mouseout", () => {
             if (puerta.stateIDUse != "abierta") {
                 puerta.getState("cerrada");
-                this.global.update();
+                this.scene.update();
             }
         });
 
         this.container.on("click", () => {
-            puerta.getState("abierta");
-            signo.removeStage();
-            this.global.update();
+            if (puerta.stateIDUse != "abierta") {
+                var [premio] = this.f.getShape("premio");
+                puerta.getState("abierta");
+                signo.removeStage();
+                premio.visible = true;
+                this.scene.update();
+
+            }
         });
 
     }
@@ -98,12 +106,12 @@ class Puerta implements ICJSAlignContainer, MConteo_Caso {
 
 
         var premio = this.f.create("premio", new createjs.Shape(), this.container) as createjs.Shape;
-        premio.graphics.beginFill(this.favorable ? "green" : "red").drawCircle(x + (width/2), y + (height/2), width*.3);
+        premio.graphics.beginFill(this.favorable ? "blue" : "red").drawCircle(x + (width / 2), y + (height / 2), width * .3);
         premio.visible = false;
 
 
 
-        this.global.update();
+        this.scene.update();
     }
 
     setTransform(x: number, y: number, width: number, height: number): void {
@@ -116,7 +124,7 @@ class Puerta implements ICJSAlignContainer, MConteo_Caso {
         signo.y = y + (height / 2) - (b.height / 2);
 
 
-        this.global.update();
+        this.scene.update();
     }
 
 
