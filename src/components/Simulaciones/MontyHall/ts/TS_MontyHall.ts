@@ -32,8 +32,6 @@ class TS_MontyHall extends createjsConfig implements ICJSGetBounds, IObjetivos, 
 
     setAsistente(asistente: Asistente) {
         this.asistente = asistente;
-        
-    
     }
 
     getObjetivos() {

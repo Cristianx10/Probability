@@ -22,26 +22,22 @@ class inicio extends CJSScene {
         super(sceneManger);
         this.montyHall = montyHall;
 
-        var nPuertas = random(2, 12);
-        var nIndex = random(2, 12);
-        nPuertas = 12;
+        var nPuertas = 3 //random(2, 12);
+        var nIndex = 2 //random(2, 12);
+
 
         for (let index = 0; index < nPuertas; index++) {
 
             var puerta = new Puerta(this);
-            if (index === nIndex) {
-                puerta.favorable = true;
-                puerta.name = "Auto";
+            if (index === (nIndex-1)) {
+                puerta.caso.favorable = true;
+                puerta.caso.addProp("contiene", { valueSpecific: { singular: "Auto", plural: "Autos" } });
             }
             this.addPuerta(puerta);
-            this.montyHall.eConteo.addCaso(puerta);
+            this.montyHall.eConteo.addCaso(puerta.caso);
         }
 
-     
-
-
         this.configValues();
-
     }
 
 
@@ -54,7 +50,7 @@ class inicio extends CJSScene {
         var line = this.f.create("line", new Shape(), this.container) as Shape;
 
         FCJSAlignCenterCenter(this, this.puertas, 200, 200,
-            { });
+            {});
 
 
         this.puertas.forEach((p) => {

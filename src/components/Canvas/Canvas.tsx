@@ -11,6 +11,7 @@ const Canvas = (props: ICanvas) => {
     const container = useRef<HTMLDivElement | any>();
 
     useEffect(() => {
+        console.log("SE CARGO EL CANVAS")
         if (container != null) {
             var containerHTML = container.current as HTMLDivElement;
             props.canvas.appendTo(containerHTML);

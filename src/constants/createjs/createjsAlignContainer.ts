@@ -27,12 +27,15 @@ export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignCon
 
     var seccionesX = Math.floor(widthTotal / width);
     var seccionesY = Math.floor(heightTotal / height);
-
+    
     var seccionSpaceX = seccionesX > nContainers ? nContainers : seccionesX;
     var spaceX = (widthTotal - (width * seccionSpaceX)) / (seccionSpaceX + 1);
+    
+    var nItemVerical = Math.ceil(nContainers / seccionSpaceX);
+    
+    console.log("Mis secciones en X", nContainers, seccionSpaceX)
 
-    var nItemVerical = Math.round(nContainers / seccionSpaceX);
-
+    console.log("Vertical item", nItemVerical)
 
     var seccionSpaceY = seccionesY > nItemVerical ? nItemVerical : seccionesY;
 

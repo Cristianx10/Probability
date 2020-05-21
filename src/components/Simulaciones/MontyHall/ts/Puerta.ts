@@ -13,14 +13,12 @@ import MConteo_Caso from '../../../../constants/probabilidad/conteo/MConteo_Caso
 import TS_MontyHall from './TS_MontyHall';
 import CJSScene from '../../../../constants/createjs/Scene/createjsScene';
 
-class Puerta implements ICJSAlignContainer, MConteo_Caso {
+class Puerta implements ICJSAlignContainer {
 
     container = new CJSContainer();
     f = new CJSShape();
 
-    favorable = false;
-    quees = "Puerta";
-    name = "Cabra";
+    caso = new MConteo_Caso();
 
     scene: CJSScene;
 
@@ -30,6 +28,9 @@ class Puerta implements ICJSAlignContainer, MConteo_Caso {
         this.scene.addChild(this.container);
 
         this.container.setBackground("#F6F6F6");
+
+        this.caso.addProp("nombre", { valueSpecific: { singular: "Puerta", plural: "Puertas" } });
+        this.caso.addProp("contiene", { value: "Cabra" });
 
         this.f.create("puerta", new createjs.Shape(), this.container);
         this.f.create("signo", new createjs.Text("?", "150px arial"), this.container);
@@ -106,7 +107,7 @@ class Puerta implements ICJSAlignContainer, MConteo_Caso {
 
 
         var premio = this.f.create("premio", new createjs.Shape(), this.container) as createjs.Shape;
-        premio.graphics.beginFill(this.favorable ? "blue" : "red").drawCircle(x + (width / 2), y + (height / 2), width * .3);
+        premio.graphics.beginFill(this.caso.favorable ? "blue" : "red").drawCircle(x + (width / 2), y + (height / 2), width * .3);
         premio.visible = false;
 
 

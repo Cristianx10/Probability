@@ -23,10 +23,26 @@ const MontyHall = () => {
 
 
     useEffect(() => {
+        console.log("SE CARGO LA ACTIVIDAD")
         TMontyHall.setAsistente(asistente);
 
-        asistente.addMensaje("Hola","script", 1000)
-        asistente.addMensaje("Mi nombre es Jorge. Y te estare acompañando a traves de esta interacción","script", 2000)
+        /*
+                asistente.setDefaulEvent({ event: "script" });
+                asistente.addMensaje("Hola", { time: 1000 })
+                asistente.addMensaje("Mi nombre es Jorge. Y te estare acompañando a traves de esta interacción", { time: 1000 });
+                asistente.addMensaje("Bien, comencemos");
+        */
+        var c = TMontyHall.eConteo;
+
+        let obj = c.toTextComas(c.getCasosPropsNoRepeat("nombre"), "Minus");
+        let objs = c.toTextComas(c.getCasosPropsNoRepeat("nombre", { favorable: true }), "Minus");
+        let favor = c.getFavorables();
+        let posi = c.getPosibles();
+
+        asistente.addMensaje(`En este momento ${obj.plural ? "tenemos" : "tengo"} ${posi} ${obj.result}, detras de todas ${obj.plural ? "estas" : "esta"} ${obj.result} se encuentran ${favor > 1 ? favor : "una"} ${objs.result} con un PREMIO especial`);
+
+        asistente.addMensaje(`¿Cuál crees que es la posibilidad de atinarle a ${favor > 1 ? favor : "una"} ${objs.result} correcta?`, {event:"qInput"})
+
 
     }, []);
 
