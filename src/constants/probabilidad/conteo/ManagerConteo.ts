@@ -1,12 +1,38 @@
+import { random } from '../../helpers/helpers';
+import DecisionManager from '../../convesacion/Decision/DecisionManager';
+
 import MConteo_Caso from './MConteo_Caso';
 import { typeProps, typePropsValue } from './MConteo_Caso';
+import MConteo_Controller from './ManagerConteoController';
 
 class ManagerConteo {
 
+    controller: MConteo_Controller;
     casos: MConteo_Caso[];
+    mDecision: DecisionManager;
 
-    constructor() {
+
+    constructor(controller: MConteo_Controller) {
+        this.controller = controller;
         this.casos = [];
+        this.mDecision = new DecisionManager();
+       // this.mDecision.addConocimiento();
+    }
+
+    execute() {
+        this.masivo(4, { variacion: 0 }, { variacion: 1 })
+        this.controller.generarScena();
+    }
+
+    masivo(cantidad: number, config: typeProps, cofig2: typeProps) {
+        var iCom = random(0, cantidad - 1);
+        for (let index = 0; index < cantidad; index++) {
+            if (index == iCom) {
+                this.controller.agregarCaso(config);
+            } else {
+                this.controller.agregarCaso(cofig2);
+            }
+        }
     }
 
     updateAction(accion: string) {
@@ -24,6 +50,10 @@ class ManagerConteo {
     addCaso(caso: MConteo_Caso) {
         caso.mConteo = this;
         this.casos.push(caso);
+    }
+
+    limpiarCasos() {
+        this.casos = [];
     }
 
     getFavorables() {

@@ -1,0 +1,26 @@
+[
+    {
+        "id": "#saludo",
+        "getPropG": {
+            "userName": "Nombre de usuario"
+        },
+        "props": {
+           
+        },
+        "razon": {
+            "a": "#saludo ## countSay > 0"
+        },
+        "dialogo": [
+            {
+                "id": "#saludo",
+                "concurrencia": 1,
+                "respuesta": "Hola ${getPropG('userName')} espero que te encuentres bien, para la siguiente actividad tenemos preparado una serie de simulaciones que espero sean de tu agrado"
+            },
+            {
+                "id": "#saludo",
+                "concurrencia": 1,
+                "respuesta": "Hola ${getPropG('userName')} bienvenido a nuestra probabilitylab, aqui te explicaremos los fundamentos de la probabilidad"
+            }
+        ]
+    }
+]

@@ -1,30 +1,21 @@
 import inicio from '../scenes/inicio';
-import { ICJSGetBounds, FCJSAlignCenterCenter } from '../../../../constants/createjs/createjsAlignContainer';
+import { ICJSGetBounds } from '../../../../constants/createjs/createjsAlignContainer';
 import createjsConfig from '../../../../constants/createjs/createjsConfig';
-import CJSScene from '../../../../constants/createjs/Scene/createjsScene';
 import Objetivo, { IObjetivos } from '../../../../constants/probabilidad/ManagerObjetivos/Objetivo';
-import Puerta from './Puerta';
-import ManagerConteo from '../../../../constants/probabilidad/conteo/ManagerConteo';
 import Asistente from '../../../../constants/convesacion/Asistente/Asistente';
 import { IIsAsistente } from '../../../../constants/convesacion/Asistente/Asistente';
 
 
 class TS_MontyHall extends createjsConfig implements ICJSGetBounds, IObjetivos, IIsAsistente {
 
-    objetivos: Objetivo[];
     nPuertas = 0;
 
     asistente?: Asistente;
-    eConteo: ManagerConteo;
 
 
     constructor() {
         super();
         this.size(1280, 720);
-        this.eConteo = new ManagerConteo();
-
-        this.objetivos = [];
-        this.objetivos.push(new Objetivo("#MontyHall", "Calcular la probabilidad de abrir una puerta", 1));
 
         this.scene.addScene(new inicio(this.scene, this), false);
         this.update();
@@ -35,7 +26,9 @@ class TS_MontyHall extends createjsConfig implements ICJSGetBounds, IObjetivos, 
     }
 
     getObjetivos() {
-        return this.objetivos;
+        return [
+            new Objetivo("#MontyHall", "Calcular la probabilidad de abrir una puerta", 1)
+        ];
     }
 
 }

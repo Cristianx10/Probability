@@ -1,13 +1,14 @@
-import { Graphics } from 'createjs-module';
+import { Graphics, Tween, DisplayObject, Ticker } from 'createjs-module';
 export interface ICJSGetBounds {
     getBounds(): { x: number, y: number, width: number, height: number };
 }
 
 export interface ICJSAlignContainer {
     setTransform(x: number, y: number, width: number, height: number): void;
+    getGraphics(): DisplayObject;
 }
 
-export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignContainer[], width: number | string, height: number, config?: { padding?: number, graphics?: Graphics }) => {
+export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignContainer[], width: number | string, height: number, config?: { padding?: number, graphics?: Graphics, anim?: "continuo" | "start" }) => {
 
     var b = base.getBounds();
 
@@ -16,7 +17,8 @@ export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignCon
     const widthTotal = b.width;
     const heightTotal = b.height;
 
-    const padding = 50;
+
+    const padding = config ? (config.padding != null ? config.padding : 50) : 50;
 
     if ((width + "").includes("%")) {
         let w = parseInt(width + "") / 100;
@@ -27,12 +29,12 @@ export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignCon
 
     var seccionesX = Math.floor(widthTotal / width);
     var seccionesY = Math.floor(heightTotal / height);
-    
+
     var seccionSpaceX = seccionesX > nContainers ? nContainers : seccionesX;
     var spaceX = (widthTotal - (width * seccionSpaceX)) / (seccionSpaceX + 1);
-    
+
     var nItemVerical = Math.ceil(nContainers / seccionSpaceX);
-    
+
     console.log("Mis secciones en X", nContainers, seccionSpaceX)
 
     console.log("Vertical item", nItemVerical)
@@ -46,6 +48,8 @@ export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignCon
     var cx = 0;
     var count = 0;
 
+    var glo: any = {};
+
     for (let index = 0; index < nContainers; index++) {
 
         var object = objects[index];
@@ -54,8 +58,49 @@ export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignCon
         var pad = padding / 2;
         cx += spaceX;
 
+        var x = cx + pad;
+        var y = cy;
 
-        object.setTransform(cx + pad, cy, width - padding, height);
+        object.setTransform(x, y, width - padding, height);
+
+
+        if (config && config.anim) {
+
+            if (index > 0) {
+                glo[index] = {};
+                glo[index].x = (cx + pad) * 1;
+                glo[index].y = cy * 1;
+                glo[index].f = () => {
+
+                    Tween.get(objects[index].getGraphics()).to({ x: glo[index].x, y: glo[index].y }, 200).call(() => {
+                        if (glo[index + 1] != null) {
+                            glo[index + 1].f();
+                            console.log("Ejecutando... ", index + 1)
+                        } else {
+                            setTimeout(() => {
+                                Ticker.removeAllEventListeners();
+                            }, 1000)
+                      
+                            console.log("Removido")
+                        }
+                    });
+
+                }
+            } else {
+
+                Tween.get(object.getGraphics()).to({ x: cx + pad, y: cy }, 200).call(() => {
+                    if (glo[index + 1] != null) {
+                        glo[index + 1].f();
+                        console.log("Ejecutando... ", index + 1)
+                    }
+                });
+
+            }
+        } else {
+            object.getGraphics().x = x;
+            object.getGraphics().y = y;
+        }
+
 
         if (config && config.graphics) {
             config.graphics

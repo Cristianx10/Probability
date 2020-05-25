@@ -1,9 +1,4 @@
-
-import * as createjs from 'createjs-module';
-
-import { create } from 'domain';
-
-import { Graphics } from 'createjs-module';
+import { Graphics, DisplayObject } from 'createjs-module';
 
 import { ICJSAlignContainer } from '../../../../constants/createjs/createjsAlignContainer';
 import { CJSContainer } from '../../../../constants/createjs/createjsContainer';
@@ -29,15 +24,17 @@ class Puerta implements ICJSAlignContainer {
 
         this.container.setBackground("#F6F6F6");
 
-        this.caso.addProp("nombre", { valueSpecific: { singular: "Puerta", plural: "Puertas" } });
-        this.caso.addProp("contiene", { value: "Cabra" });
-
         this.f.create("puerta", new createjs.Shape(), this.container);
         this.f.create("signo", new createjs.Text("?", "150px arial"), this.container);
 
-
         this.mouseEvent();
     }
+    getGraphics(): DisplayObject {
+        return this.container.container;
+    }
+
+
+
 
     mouseEvent() {
         var [puerta, signo] = this.f.getShape("puerta", "signo");
@@ -107,12 +104,19 @@ class Puerta implements ICJSAlignContainer {
 
 
         var premio = this.f.create("premio", new createjs.Shape(), this.container) as createjs.Shape;
-        premio.graphics.beginFill(this.caso.favorable ? "blue" : "red").drawCircle(x + (width / 2), y + (height / 2), width * .3);
+        var con = this.caso.getProp("contiene", "string");
+
+
+        premio.graphics.beginFill(con == "Auto" ? "blue" : "red").drawCircle(x + (width / 2), y + (height / 2), width * .3);
         premio.visible = false;
 
-
-
         this.scene.update();
+    }
+
+    destroy() {
+        this.f.removeAllChildren();
+        this.scene.removeChild(this.container);
+        this.container.removeAllEventListeners();
     }
 
     setTransform(x: number, y: number, width: number, height: number): void {

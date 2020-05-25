@@ -1,9 +1,20 @@
-{
-    "puertas": [
-        {
-            "favorable": true
+[
+    {
+        "props": {
+            "contiene": []
         },
-        {},
-        {}
-    ]
-}
+        "razon": {},
+        "procesar": {},
+        "format": {
+            "obj": "${contiene.plural > 1 ? 'tenemos': 'tengo' }"
+        },
+        "dialogo": [
+            {
+                "respuesta": "En este momento ${obj} ${posi}"
+            },
+            {
+                "respuesta": "Hola ${user} bienvenido a nuestra probabilitylab, aqui te explicaremos los fundamentos de la probabilidad"
+            }
+        ]
+    }
+]

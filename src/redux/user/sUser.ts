@@ -1,10 +1,13 @@
 import { IStoreReducer } from '../Store';
 
 import { type as updateUser } from './actions/updateUser';
+import { mente } from '../../components/App/App';
 
 var userDefaultState = {
-    name: "Nombre de usuario",
+    name: "Cristian",
 };
+
+
 
 const reducer = (_this = userDefaultState, { type, payload }: IStoreReducer) => {
 
@@ -16,6 +19,8 @@ const reducer = (_this = userDefaultState, { type, payload }: IStoreReducer) => 
         default:
             break;
     }
+
+    mente.addProp("userName", _this.name, 0);
 
     userDefaultState = _this;
 

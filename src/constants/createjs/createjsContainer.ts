@@ -1,12 +1,13 @@
+import { Container, Shape, DisplayObject } from "createjs-module";
+
 export interface ICJSIsConteiner {
-    getContainer(): createjs.Container;
+    getContainer(): Container;
 }
 
 export class CJSContainer implements ICJSIsConteiner {
 
-
-    container = new createjs.Container();
-    background = new createjs.Shape();
+    container = new Container();
+    background = new Shape();
     VALUE_BACKGROUND: string = "white";
 
     constructor() {
@@ -15,24 +16,24 @@ export class CJSContainer implements ICJSIsConteiner {
         this.setBounds(0, 0, 100, 100);
     }
 
-    addChild(...children: createjs.DisplayObject[] | ICJSIsConteiner[]) {
+    addChild(...children: DisplayObject[] | ICJSIsConteiner[]) {
 
-        children.forEach((c: createjs.DisplayObject | ICJSIsConteiner) => {
-            if((c as ICJSIsConteiner).getContainer != null){
+        children.forEach((c: DisplayObject | ICJSIsConteiner) => {
+            if ((c as ICJSIsConteiner).getContainer != null) {
                 this.container.addChild((c as ICJSIsConteiner).getContainer());
-            }else{
-                this.container.addChild((c as createjs.DisplayObject));
+            } else {
+                this.container.addChild((c as DisplayObject));
             }
         });
 
     }
 
-    removeChild(...children: createjs.DisplayObject[] | ICJSIsConteiner[]){
-        children.forEach((c: createjs.DisplayObject | ICJSIsConteiner) => {
-            if((c as ICJSIsConteiner).getContainer != null){
+    removeChild(...children: DisplayObject[] | ICJSIsConteiner[]) {
+        children.forEach((c: DisplayObject | ICJSIsConteiner) => {
+            if ((c as ICJSIsConteiner).getContainer != null) {
                 this.container.removeChild((c as ICJSIsConteiner).getContainer());
-            }else{
-                this.container.removeChild((c as createjs.DisplayObject));
+            } else {
+                this.container.removeChild((c as DisplayObject));
             }
         });
     }
@@ -45,9 +46,14 @@ export class CJSContainer implements ICJSIsConteiner {
 
     on(type: string, event: Function) {
         this.container.on(type, (e) => { event(e); });
+
     }
 
-    getContainer(): createjs.Container {
+    removeAllEventListeners() {
+        this.container.removeAllEventListeners();
+    }
+
+    getContainer(): Container {
         return this.container;
     }
 

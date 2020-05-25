@@ -12,9 +12,8 @@ class CJSSceneManager {
     }
 
     updateSceneActive() {
-        this.stage.removeAllChildren()
+        this.stage.removeAllChildren();
         this.scenes.forEach((s) => {
-            console.log("Mi escena esta> ", s.active)
             if (s.active) {
                 this.stage.addChild(s);
             }

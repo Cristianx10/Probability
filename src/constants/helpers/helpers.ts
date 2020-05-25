@@ -1,3 +1,14 @@
 export function random(a: number, b: number) {
-    return Math.round(Math.random() * (b - a) + parseInt(a+""));
+    return Math.round(Math.random() * (b - a) + parseInt(a + ""));
+}
+
+export function shuffle(a: any[]) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
 }

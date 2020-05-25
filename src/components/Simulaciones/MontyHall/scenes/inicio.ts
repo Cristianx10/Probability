@@ -1,43 +1,78 @@
+import { Shape } from "createjs-module";
+
 import Puerta from "../ts/Puerta";
 import TS_MontyHall from '../ts/TS_MontyHall';
 import { FCJSAlignCenterCenter } from '../../../../constants/createjs/createjsAlignContainer';
 import CJSShape from '../../../../constants/createjs/createjsShape';
 import CJSScene from '../../../../constants/createjs/Scene/createjsScene';
 import CJSSceneManager from '../../../../constants/createjs/Scene/createjsSceneManager';
-import Objetivo from "../../../../constants/probabilidad/ManagerObjetivos/Objetivo";
+import { typeProps } from '../../../../constants/probabilidad/conteo/MConteo_Caso';
 import ManagerConteo from '../../../../constants/probabilidad/conteo/ManagerConteo';
-import { random } from '../../../../constants/helpers/helpers';
-import { Shape } from "createjs-module";
+import MConteo_Controller from "../../../../constants/probabilidad/conteo/ManagerConteoController";
 
-class inicio extends CJSScene {
-
+class inicio extends CJSScene implements MConteo_Controller {
 
     f = new CJSShape();
     puertas: Puerta[] = [];
-
-
     montyHall: TS_MontyHall;
+    eConteo: ManagerConteo;
 
     constructor(sceneManger: CJSSceneManager, montyHall: TS_MontyHall) {
         super(sceneManger);
         this.montyHall = montyHall;
 
-        var nPuertas = 3 //random(2, 12);
-        var nIndex = 2 //random(2, 12);
+        this.eConteo = new ManagerConteo(this);
+        if(this.montyHall.asistente){
+            this.eConteo.mDecision.setAsistente(this.montyHall.asistente)
+        }
+        this.eConteo.execute()
+    }
+
+    nCasosTotal = 0;
+    nCasosMin = 1;
+    nCasosMax = 12;
 
 
-        for (let index = 0; index < nPuertas; index++) {
+    limpiarCasos() {
+        this.puertas.forEach((p) => {
+            p.destroy();
+        });
+        this.puertas = [];
+        this.eConteo.limpiarCasos();
+    }
 
-            var puerta = new Puerta(this);
-            if (index === (nIndex-1)) {
-                puerta.caso.favorable = true;
-                puerta.caso.addProp("contiene", { valueSpecific: { singular: "Auto", plural: "Autos" } });
-            }
-            this.addPuerta(puerta);
-            this.montyHall.eConteo.addCaso(puerta.caso);
+    agregarCaso(type: typeProps) {
+        var puerta = new Puerta(this);
+        puerta.caso.combineProps(type);
+
+        var caso = puerta.caso;
+
+        this.addPuerta(puerta);
+
+        this.eConteo.addCaso(puerta.caso);
+
+        switch (caso.getProp("variacion")) {
+            case 0:
+                caso.addProp("nombre", { valueSpecific: { singular: "Puerta", plural: "Puertas" } });
+                caso.addProp("contiene", { value: "Cabra" });
+                break;
+            case 1:
+                caso.addProp("nombre", { valueSpecific: { singular: "Puerta", plural: "Puertas" } });
+                caso.addProp("contiene", { valueSpecific: { singular: "Auto", plural: "Autos" } });
+                break;
         }
 
-        this.configValues();
+        return puerta.caso;
+
+    }
+
+    generarScena() {
+
+        FCJSAlignCenterCenter(this, this.puertas, 200, 200,
+            {});
+
+        this.puertas.forEach((p) => { p.draw(); });
+        this.update();
     }
 
 
@@ -49,20 +84,12 @@ class inicio extends CJSScene {
 
         var line = this.f.create("line", new Shape(), this.container) as Shape;
 
-        FCJSAlignCenterCenter(this, this.puertas, 200, 200,
-            {});
-
-
-        this.puertas.forEach((p) => {
-            p.draw();
-        })
         /*
                 if (this.sceneManager) {
                     let g = this.sceneManager.getBounds();
                     line.graphics.beginFill("#FF9600").rect(0, 550, g.width, 50)
                 }
                 */
-
     }
 
 }

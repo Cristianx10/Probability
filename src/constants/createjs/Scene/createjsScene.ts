@@ -18,23 +18,31 @@ class CJSScene implements ICJSIsConteiner {
         this.updateStage();
     }
 
+    isLoadFiles = false;
+    private sceneLoadRequest: Function[] = [];
+    private currentSceneLoad = 0;
+
     addChild(...children: createjs.DisplayObject[] | ICJSIsConteiner[]) {
 
+
+
         children.forEach((c: createjs.DisplayObject | ICJSIsConteiner) => {
-            if((c as ICJSIsConteiner).getContainer != null){
+            if ((c as ICJSIsConteiner).getContainer != null) {
                 this.container.addChild((c as ICJSIsConteiner).getContainer());
-            }else{
+            } else {
                 this.container.addChild((c as createjs.DisplayObject));
             }
         });
 
+
+
     }
 
-    removeChild(...children: createjs.DisplayObject[] | ICJSIsConteiner[]){
+    removeChild(...children: createjs.DisplayObject[] | ICJSIsConteiner[]) {
         children.forEach((c: createjs.DisplayObject | ICJSIsConteiner) => {
-            if((c as ICJSIsConteiner).getContainer != null){
+            if ((c as ICJSIsConteiner).getContainer != null) {
                 this.container.removeChild((c as ICJSIsConteiner).getContainer());
-            }else{
+            } else {
                 this.container.removeChild((c as createjs.DisplayObject));
             }
         });
@@ -49,7 +57,7 @@ class CJSScene implements ICJSIsConteiner {
     updateStage() {
         if (this.sceneManager) {
             var stage = this.sceneManager.getStage();
-       
+
             var { x, y, width, height } = stage.getBounds();
             this.container.setBounds(x, y, width, height);
             this.drawBackground();

@@ -1,3 +1,4 @@
+import DecisionManager from '../Decision/DecisionManager';
 export interface IIsAsistente {
     asistente?: Asistente;
     setAsistente(asistente: Asistente): void;
@@ -13,26 +14,44 @@ interface configMensaje extends eventMensaje {
 
 class Asistente {
 
-
     chatContainer?: HTMLDivElement;
     chatInput?: HTMLDivElement;
+
     mensajes: Mensaje[];
     currentMensajeIndex = 0;
     dEvent: configMensaje;
 
+    animo: number = 5;
+
+    decidir: DecisionManager;
+
     constructor() {
         this.mensajes = [];
+
         this.dEvent = {
             event: "",
             time: 4000
         };
+
+        this.decidir = new DecisionManager(this);
     }
 
 
+    addMensajeD(mensaje: any, config?: configMensaje, accion?: Function) {
 
-    addMensaje(mensaje: string, config?: configMensaje) {
-        var c = config ? Object.assign(this.dEvent, config) : this.dEvent;
-        var m = new Mensaje(mensaje, c);
+        var temS = Object.assign({}, this.dEvent);
+        var c = config ? Object.assign(temS, config) : this.dEvent;
+        var m = new Mensaje(mensaje.result, c, accion);
+        mensaje.dialogo.countSay++;
+        this.mensajes.push(m);
+        this.start();
+    }
+
+
+    addMensaje(mensaje: string, config?: configMensaje, accion?: Function) {
+        var temS = Object.assign({}, this.dEvent);
+        var c = config ? Object.assign(temS, config) : this.dEvent;
+        var m = new Mensaje(mensaje, c, accion);
         this.mensajes.push(m);
         this.start();
     }
@@ -51,6 +70,7 @@ class Asistente {
                     this.showTextScriptTime(m)
                     break;
                 case "qInput":
+                    console.log("hgjgjhgjgjhg")
                     this.showTextScriptTime(m)
                     this.showInput();
                     break;
@@ -60,20 +80,20 @@ class Asistente {
 
     siguiente() {
         if (this.currentMensajeIndex + 1 < this.mensajes.length) {
+            var m = this.mensajes[this.currentMensajeIndex];
+            m.finish();
             this.currentMensajeIndex++;
             this.start();
         }
     }
 
-    showInput(){
-        if(this.chatInput){
+    showInput() {
+        if (this.chatInput) {
             this.chatInput.innerHTML = `
             <input type="text" />
             <button>Responder</button>`
         }
     }
-
-
 
     private showText(m: string) {
         if (this.chatContainer) {
@@ -108,7 +128,7 @@ class Asistente {
                         this.siguiente();
                     }, time)
                 }
-            }, 100);
+            }, 50);
         }
     }
 
@@ -133,12 +153,20 @@ class Mensaje {
     mensaje: string;
     config: configMensaje;
     ejecutando = false;
+    fFinal?: Function;
 
-    constructor(mensaje: string, config: configMensaje) {
+
+    constructor(mensaje: string, config: configMensaje, fFinal?: Function) {
         this.mensaje = mensaje;
         this.config = config;
+        this.fFinal = fFinal;
     }
 
+    finish() {
+        if (this.fFinal) {
+            this.fFinal();
+        }
+    }
 
 
 

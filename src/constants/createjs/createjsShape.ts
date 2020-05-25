@@ -1,4 +1,4 @@
-import { Graphics, Shape, Text, Stage } from "createjs-module";
+import { Graphics, Shape, Text, Stage, DisplayObject } from "createjs-module";
 
 interface ICJSShape {
     state: any;
@@ -63,7 +63,12 @@ class CJSShape {
 
     }
 
-
+    removeAllChildren() {
+        var shapes = Object.values(this.s);
+        shapes.forEach((shape: any) => {
+            shape.container.removeChild(shape);
+        })
+    }
 
     state(o: any) {
         return new Graphics();

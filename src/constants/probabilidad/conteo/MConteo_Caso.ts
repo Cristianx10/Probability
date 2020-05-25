@@ -2,7 +2,13 @@ import ManagerConteo from './ManagerConteo';
 
 export interface typeProps {
     "nombre"?: string;
-    "contiene": string
+    "contiene"?: string
+    "variacion"?: number
+}
+
+
+export interface typePropsResult {
+    "string"?: string;
 }
 
 export interface typePropsValue {
@@ -10,7 +16,7 @@ export interface typePropsValue {
     valueSpecific?: { singular?: string, plural?: string }
 }
 
-type Optional<typePropsValue> = { [K in keyof typePropsValue]?: typePropsValue[K] };
+
 
 class MConteo_Caso {
 
@@ -22,15 +28,27 @@ class MConteo_Caso {
         this.props = {};
     }
 
-
-
     addProp<K extends keyof typeProps, M>(id: K, value: typePropsValue) {
         var i = id as any;
         this.props[i] = value;
     }
 
-    getProp<K extends keyof typeProps>(id: K) {
-        return this.props[id];
+    getProp<T, K extends keyof typeProps, P extends keyof typePropsResult>(id: K, type?: P): T | typePropsValue {
+        var prop = this.props[id] as typePropsValue;
+        var result = prop as any;
+
+        if (type == "string" && prop) {
+            if (prop.valueSpecific) {
+                result = prop.valueSpecific.singular;
+            } else {
+                result = prop.value;
+            }
+        }
+        return result;
+    }
+
+    combineProps(obj: typeProps) {
+        this.props = Object.assign(this.props, obj);
     }
 
     setContador(mConteo: ManagerConteo) {
