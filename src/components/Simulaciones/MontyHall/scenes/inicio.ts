@@ -22,7 +22,7 @@ class inicio extends CJSScene implements MConteo_Controller {
         this.montyHall = montyHall;
 
         this.eConteo = new ManagerConteo(this);
-        if(this.montyHall.asistente){
+        if (this.montyHall.asistente) {
             this.eConteo.mDecision.setAsistente(this.montyHall.asistente)
         }
         this.eConteo.execute()
@@ -82,7 +82,7 @@ class inicio extends CJSScene implements MConteo_Controller {
 
     configValues() {
 
-        var line = this.f.create("line", new Shape(), this.container) as Shape;
+        var line = this.f.create<Shape>("line", new Shape(), this.container);
 
         /*
                 if (this.sceneManager) {

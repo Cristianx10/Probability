@@ -46,6 +46,7 @@ class BarajaManger implements CJSLoad {
             }
         })
 
+        /*
         Ticker.addEventListener("tick", (e: any) => {
 
             if (!e.paused) {
@@ -54,6 +55,7 @@ class BarajaManger implements CJSLoad {
             }
 
         });
+        */
     }
 
 
@@ -67,6 +69,7 @@ class BarajaManger implements CJSLoad {
         for (let index = 0; index < numero; index++) {
             this.graphicsImg.forEach((g) => {
                 var carta = new Carta(new Bitmap(g.img), g.value);
+                carta.scena = this.scene;
                 arrayCartas.push(carta);
             });
         }

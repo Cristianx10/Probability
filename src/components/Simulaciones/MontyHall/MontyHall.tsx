@@ -35,9 +35,13 @@ const MontyHall = () => {
         asistente.decidir.addConocimiento(Saludo);
 
         var saludoType = random(0, 1);
-        asistente.decidir.ejecutarAccion("#saludo", (d, i) => {
-            asistente.addMensajeD(d);
 
+
+
+        asistente.decidir.ejecutarAccion("#saludo", (id: string, res: string, p: any) => {
+
+            p();
+            console.log("Mi accion", id, res, "DSsdsds", p)
         });
 
 

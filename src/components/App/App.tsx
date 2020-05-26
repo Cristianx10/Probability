@@ -11,7 +11,9 @@ const App = () => {
   return (
     <div className="App">
 
-      <Blackjack />
+      {/** <Blackjack /> */}
+
+      <MontyHall />
 
     </div>
   );

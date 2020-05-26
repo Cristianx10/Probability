@@ -41,7 +41,7 @@ export class CJSContainer implements ICJSIsConteiner {
     setBackground(value: string) {
         this.VALUE_BACKGROUND = value;
         var { x, y, width, height } = this.getBounds();
-        this.background.graphics.clear().beginFill(this.VALUE_BACKGROUND).rect(x, y, width, height);
+        this.background.graphics.clear().beginFill(this.VALUE_BACKGROUND).rect(0, 0, width, height);
     }
 
     on(type: string, event: Function) {
@@ -57,13 +57,29 @@ export class CJSContainer implements ICJSIsConteiner {
         return this.container;
     }
 
-    setBounds(x: number, y: number, width: number, height: number) {
-        this.container.setBounds(x, y, width, height);
-        this.background.graphics.clear().beginFill(this.VALUE_BACKGROUND).rect(x, y, width, height);
+    setBounds(x?: number, y?: number, width?: number, height?: number) {
+        var d = this.getBounds();
+
+        var fX = x ? x : (d.x ? d.x : 0);
+        var fY = y ? y : (d.y ? d.y : 0);
+        var fWidth = width ? width : (d.width ? d.width : 0);
+        var fHeight = height ? height : (d.height ? d.height : 0);
+
+        this.container.setBounds(fX, fY, fWidth, fHeight);
+        this.container.x = fX;
+        this.container.y = fY;
+        this.background.graphics.clear().beginFill(this.VALUE_BACKGROUND).rect(0, 0, fWidth, fHeight);
     }
 
     getBounds() {
-        return this.container.getBounds();
+        var bounds = this.container.getBounds();
+
+        if (bounds == null) {
+            this.container.setBounds(0, 0, 0, 0);
+            bounds = this.container.getBounds();
+        }
+
+        return bounds;
     }
 
 }

@@ -4,7 +4,7 @@ export interface ICJSGetBounds {
 }
 
 export interface ICJSAlignContainer {
-    setTransform(x: number, y: number, width: number, height: number): void;
+    setTransform(x?: number, y?: number, width?: number, height?: number): void;
     getGraphics(): DisplayObject;
 }
 
@@ -80,7 +80,7 @@ export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignCon
                             setTimeout(() => {
                                 Ticker.removeAllEventListeners();
                             }, 1000)
-                      
+
                             console.log("Removido")
                         }
                     });
@@ -127,6 +127,26 @@ export const FCJSAlignCenterCenter = (base: ICJSGetBounds, objects: ICJSAlignCon
         } else {
             cx += width;
         }
+
+
+    }
+}
+
+
+
+export const FCJSAlignDistLeft = (pos: { x: number, y: number }, objects: ICJSAlignContainer[], config?: { padding?: number, graphics?: Graphics, anim?: "continuo" | "start" }) => {
+
+
+    const padding = config ? (config.padding != null ? config.padding : 50) : 50;
+
+    for (let index = 0; index < objects.length; index++) {
+
+        var object = objects[index];
+        var x = pos.x + padding * (index);
+        var y = pos.y;
+        
+        object.setTransform(x, y);
+
 
 
     }

@@ -1,7 +1,7 @@
 import Asistente from '../Asistente/Asistente';
+import { mente } from '../../../components/App/App';
 
 import Decision from './Decision';
-import { mente } from '../../../components/App/App';
 
 export interface IStructureDecision {
     id: string;
@@ -10,13 +10,25 @@ export interface IStructureDecision {
     format?: any;
     procesar?: any;
     razon?: any;
-    dialogo?: { respuesta: string, concurrencia: number, id: string }[];
+    tareas?: IStructureTask[];
+    condiciones?: any;
+    acciones?: any;
 }
 
 export interface IStructureRazon {
     id: string;
-    dialogos: any;
-    razon: { id: string, accion: string }[]
+    tareas: any;
+    props: any;
+    condiciones: { id: string, condicion: string }[];
+    acciones: { id: string, accion: string }[];
+    getProp: (id: string) => any;
+}
+
+export interface IStructureTask {
+    id: string;
+    respuesta: string;
+    acciones: string[];
+    condiciones: string[]
 }
 
 class DecisionManager {
@@ -44,90 +56,144 @@ class DecisionManager {
 
             var accion: IStructureRazon = {
                 id: c.id,
-                dialogos: {},
-                razon: []
+                props: {},
+                tareas: {},
+                condiciones: [],
+                acciones: [],
+                getProp: (id: string) => {
+                    return eval("accion.props." + id);
+                }
             };
 
+
             if (c.props) {
-                /**
-                 * 
-                 * var propsGlobalArray = Object.entries(c.propsGlobal);
-                                    propsGlobalArray.forEach((datoPropGlobal) => {
-                                        let id = datoPropGlobal[0];
-                                        let exe = () => {
-                                            return mente.getProp(id);
-                                        }
-                                        accion.propsGlobal[id] = exe;
-                                    });
-                                    
-                 */
+                var propsArray = Object.entries(c.props);
+                propsArray.forEach((prop) => {
+                    var ac = prop[1] + "";
+                    eval("accion.props." + prop[0] + "=" + ac);
+                });
             }
 
-            if (c.razon) {
-                var o: any[] = Object.values(c.razon);
-                o.forEach((f: string) => {
-                    var r = f.split("##")
-                    let miId = r[0].trim()
-                    accion.razon.push({
-                        id: miId,
-                        accion: r[1]
-                    });
-                })
+
+            if (c.condiciones) {
+                var condiArray = Object.entries(c.props);
+                condiArray.forEach((c: any) => {
+                    accion.condiciones.push({ id: c[0], condicion: c[1] });
+                });
             }
 
-            if (c.dialogo) {
-                for (let j = 0; j < c.dialogo.length; j++) {
-                    var d = c.dialogo[j]
+            if (c.acciones) {
+                var accionArray = Object.entries(c.acciones);
+                accionArray.forEach((c: any) => {
+                    accion.acciones.push({ id: c[0], accion: c[1] });
+                });
+            }
+
+
+            if (c.tareas) {
+                
+                for (let j = 0; j < c.tareas.length; j++) {
+                    var d = c.tareas[j]
 
                     let miId = d.id.trim()
-                    var res = {
+                    var res: IStructureTask = {
                         id: miId,
-                        respuesta: d.respuesta
+                        respuesta: d.respuesta,
+                        condiciones: [],
+                        acciones: []
                     };
 
-                    if (accion.dialogos[d.id] == null) {
-                        accion.dialogos[d.id] = {
-                            countSay: 0,
-                            respuestas: []
-                        };
+                    if (accion.tareas[d.id] == null) {
+                        accion.tareas[d.id] = [];
                     }
-
-                    accion.dialogos[d.id].respuestas.push(res);
-
+                    
+                    accion.tareas[d.id].push(res);
+                    
                 }
             }
 
+       
             this.acciones.push(accion);
-        }
 
+            console.log("MIS TAREAS", accion)
+        }
+    
+       
     }
 
-    ejecutarAccion(id: string, toDo: (s: { dialogo: any, result: string }, index: number) => void) {
-        this.acciones.forEach((accion) => {
+    ejecutarAccion(id: string, toDo: Function) {
+        for (let i = 0; i < this.acciones.length; i++) {
+            let accion = this.acciones[i];
+
+        
             if (accion.id == id) {
 
-                var dialogos = Object.values(accion.dialogos);
+                var { getProp, props } = accion;
+                var propsG = mente.props;
 
-                dialogos.forEach((dialogo: any) => {
-                    dialogo.respuestas.forEach((d: any, index: number) => {
-                        var decir = this.toDialogo(accion, d.respuesta);
-                        var verdad = true;
-                        console.log("Mi razonamiento", accion.razon)
-                        accion.razon.forEach((r) => {
-                            if (r.id == d.id) {
-                                var countSay = dialogo.countSay;
-                                if (eval(r.accion)) {
-                                    verdad = false;
+                var tareas = Object.values(accion.tareas) as IStructureTask[][];
+
+            
+
+                tareas.forEach((tarea) => {
+
+                    tarea.forEach((t, index: number) => {
+
+                        console.log("MI TAREA", t)
+
+                        var id = t.id;
+
+                        var respuesta = eval(this.toJS(t.respuesta));
+
+                        var condicionFinal = true;
+
+                        var actionFinal = () => { };
+
+                        for (let k = 0; k < t.condiciones.length; k++) {
+                            let condicion = t.condiciones[k];
+                            for (let m = 0; m < accion.condiciones.length; m++) {
+                                let condicionLocal = accion.condiciones[m];
+
+                                if (condicion == condicionLocal.id) {
+                                  
+                                    condicionFinal = eval(condicionLocal.condicion);
+                                    m = accion.condiciones.length;
                                 }
                             }
-                        })
-                        if (verdad) {
-                            toDo({ dialogo, result: decir }, index);
                         }
+
+                        for (let k = 0; k < t.acciones.length; k++) {
+                            let action = t.acciones[k];
+
+                            for (let m = 0; m < accion.acciones.length; m++) {
+                                let actionLocal = accion.acciones[m];
+
+
+                                if (action == actionLocal.id) {
+
+                                    actionFinal = eval(`()=>{${actionLocal.accion}}`);
+                                    m = accion.acciones.length;
+                                }
+
+                            }
+                        }
+
+                        console.log("MIS ACCIOENS", accion.acciones)
+
+                        if (condicionFinal) {
+                            toDo(id, respuesta, actionFinal);
+                        }
+
+
                     });
+
                 });
             }
-        });
+        }
+    }
+
+    getProp() {
+
     }
 
     toDialogo(accion: IStructureRazon, instruccion: string) {

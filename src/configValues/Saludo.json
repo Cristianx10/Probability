@@ -1,25 +1,33 @@
 [
     {
         "id": "#saludo",
-        "getPropG": {
+        "propG": {
             "userName": "Nombre de usuario"
         },
         "props": {
-           
+            "countSay": 0
         },
-        "razon": {
-            "a": "#saludo ## countSay > 0"
+        "condiciones": {
+            "saludos": "props.countSay < 1"
         },
-        "dialogo": [
+        "acciones": {
+            "saludar": "props.countSay++;"
+        },
+        "tareas": [
             {
                 "id": "#saludo",
-                "concurrencia": 1,
-                "respuesta": "Hola ${getPropG('userName')} espero que te encuentres bien, para la siguiente actividad tenemos preparado una serie de simulaciones que espero sean de tu agrado"
+                "condiciones": [
+                    "saludos"
+                ],
+                "acciones": [
+                    "saludar"
+                ],
+                "respuesta": "Hola ${propsG.userName} espero que te encuentres bien, para la siguiente actividad tenemos preparado una serie de simulaciones que espero sean de tu agrado"
             },
             {
                 "id": "#saludo",
                 "concurrencia": 1,
-                "respuesta": "Hola ${getPropG('userName')} bienvenido a nuestra probabilitylab, aqui te explicaremos los fundamentos de la probabilidad"
+                "respuesta": "Hola ${propsG.userName} bienvenido a nuestra probabilitylab, aqui te explicaremos los fundamentos de la probabilidad"
             }
         ]
     }

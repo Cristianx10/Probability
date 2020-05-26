@@ -15,6 +15,8 @@ class CJSScene implements ICJSIsConteiner {
     constructor(sceneManager: CJSSceneManager) {
         this.sceneManager = sceneManager;
         this.container.addChild(this.background);
+        var b = this.sceneManager.getBounds();
+        this.setBounds(b.x, b.y, b.width, b.height);
         this.updateStage();
     }
 
@@ -24,8 +26,6 @@ class CJSScene implements ICJSIsConteiner {
 
     addChild(...children: createjs.DisplayObject[] | ICJSIsConteiner[]) {
 
-
-
         children.forEach((c: createjs.DisplayObject | ICJSIsConteiner) => {
             if ((c as ICJSIsConteiner).getContainer != null) {
                 this.container.addChild((c as ICJSIsConteiner).getContainer());
@@ -33,9 +33,6 @@ class CJSScene implements ICJSIsConteiner {
                 this.container.addChild((c as createjs.DisplayObject));
             }
         });
-
-
-
     }
 
     removeChild(...children: createjs.DisplayObject[] | ICJSIsConteiner[]) {
@@ -82,8 +79,29 @@ class CJSScene implements ICJSIsConteiner {
         return this.container;
     }
 
+    setBounds(x?: number, y?: number, width?: number, height?: number) {
+        var d = this.getBounds();
+
+        var fX = x ? x : (d.x ? d.x : 0);
+        var fY = y ? y : (d.y ? d.y : 0);
+        var fWidth = width ? width : (d.width ? d.width : 0);
+        var fHeight = height ? height : (d.height ? d.height : 0);
+
+        this.container.setBounds(fX, fY, fWidth, fHeight);
+        this.container.x = fX;
+        this.container.y = fY;
+        this.background.graphics.clear().beginFill(this.VALUE_BACKGROUND).rect(0, 0, fWidth, fHeight);
+    }
+
     getBounds() {
-        return this.container.getBounds();
+        var bounds = this.container.getBounds();
+        
+        if (bounds == null) {
+            this.container.setBounds(0, 0, 0, 0);
+            bounds = this.container.getBounds();
+        }
+        
+        return bounds;
     }
 }
 

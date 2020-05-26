@@ -38,7 +38,6 @@ class Asistente {
 
 
     addMensajeD(mensaje: any, config?: configMensaje, accion?: Function) {
-
         var temS = Object.assign({}, this.dEvent);
         var c = config ? Object.assign(temS, config) : this.dEvent;
         var m = new Mensaje(mensaje.result, c, accion);

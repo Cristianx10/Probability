@@ -7,6 +7,7 @@ interface ICJSShape {
     container: any;
     removeStage: Function;
     addStage: Function;
+    graphics: Graphics;
 }
 
 
@@ -14,40 +15,42 @@ class CJSShape {
 
     s: any = {};
 
-    create(id: string, object: any, stage?: any, move?: boolean) {
+    create<T>(id: string, object: DisplayObject, stage?: any, move?: boolean): T | DisplayObject & ICJSShape {
 
         if (stage) {
             stage.addChild(object);
         }
 
-        object.state = {};
-        object.container = stage;
-        object.removeStage = () => {
-            object.container.removeChild(object);
+        var obj = object as DisplayObject & ICJSShape;
+
+        obj.state = {};
+        obj.container = stage;
+        obj.removeStage = () => {
+            obj.container.removeChild(obj);
         }
 
-        object.addStage = () => {
-            object.container.addChild(object);
+        obj.addStage = () => {
+            obj.container.addChild(obj);
         }
-        object.removeStage = () => {
-            object.container.removeChild(object);
+        obj.removeStage = () => {
+            obj.container.removeChild(obj);
         }
-        object.getState = (id: string) => {
-            object.stateIDUse = id;
-            object.graphics = new Graphics();
-            object.graphics = object.state[id];
+        obj.getState = (id: string) => {
+            obj.stateIDUse = id;
+            //obj.graphics = new Graphics();
+            obj.graphics = obj.state[id];
         };
-        object.stateIDUse = "";
-        this.s[id] = object;
+        obj.stateIDUse = "";
+        this.s[id] = obj;
 
 
         if (move) {
             var guia = new Text("", "40px arial");
             stage.addChild(guia);
-            object.on("pressmove", (evt: any) => {
+            obj.on("pressmove", (evt: any) => {
                 if (stage) {
-                    object.x = stage.mouseX;
-                    object.y = stage.mouseY;
+                    obj.x = stage.mouseX;
+                    obj.y = stage.mouseY;
 
                     guia.x = stage.mouseX;
                     guia.y = stage.mouseY;
@@ -59,7 +62,7 @@ class CJSShape {
 
         }
 
-        return object;
+        return obj;
 
     }
 
