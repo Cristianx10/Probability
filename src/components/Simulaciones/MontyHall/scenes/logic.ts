@@ -1,5 +1,7 @@
 import L_Cuadrado from '../../../../constants/logic/L_Cuadrado';
 import L_Rombo from '../../../../constants/logic/L_Rombo';
+import { type } from '../../../../redux/user/actions/updateUser';
+
 import inicio from './inicio';
 
 var L_MontyHall: Function = (i: inicio): any => {
@@ -34,52 +36,166 @@ var L_MontyHall: Function = (i: inicio): any => {
         i.agregarCaso({ variacion: 1 });
         i.generarScena();
         i.update();
+    }, () => { explica1.exe(); });
 
+    var explica1 = new L_Rombo("explica1", () => {
+
+        return "correcto";
+    }, () => {
         if (i.montyHall.asistente) {
             i.montyHall.asistente.setDefaulEvent({ event: "script", time: 2000 })
-            i.montyHall.asistente.addMensaje("Tienes que escoger alguna de estas puestas ", {}, () => {
-                i.setAcciones((id: string) => {
-                    if (id == "abrir") {
-                        explica1.exe();
-                    }
-                });
-            })
-            i.montyHall.asistente.addMensaje("Buena suerte en tu elección ");
+            i.montyHall.asistente.addMensaje("Tienes que escoger alguna de estas puestas ");
+            i.montyHall.asistente.addMensaje("Buena suerte en tu elección ", {}, () => {
+                explica1.exe();
+            });
         }
     });
 
-    var explica1 = new L_Rombo("explica1", () => {
-        correcto.exe();
-        return "correcto";
-    });
-
     var correcto = new L_Rombo("correcto", () => {
-        alert();
-        return "";
+        console.log("CORRECTO")
+        var variacion = correcto.props.type;
+        var respuesta = "";
+
+        if (variacion == 0) {
+            respuesta = "revelo";
+        } else if (variacion == 1) {
+            respuesta = "ayuda";
+        }
+
+        return respuesta;
+    }, () => {
+
+        i.setAcciones((id: string, config: any) => {
+            if (id == "abrir") {
+                i.setAcciones(() => { })
+                correcto.setProps(config);
+                correcto.exe();
+            }
+        });
     });
 
     var revelo = new L_Rombo("revelo", () => {
-        return "";
+        console.log("QUIERO REVELARLO")
+
+        var respuesta = "";
+
+        console.log("Correcto", correcto.props, "Revelo", revelo.props)
+
+        if (revelo.props.orden == correcto.props.orden || revelo.props.continua != null) {
+            respuesta = "finGano";
+
+        } else {
+            respuesta = "correcto";
+        }
+
+        return respuesta;
+    }, () => {
+
+        if (i.montyHall.asistente) {
+            i.montyHall.asistente.addMensaje("Estas seguro de tu elección, piensa bien en las probabilidades que tienes de ganar",
+                {
+                    event: "qInputSi",
+                    si: () => {
+                        alert("Abriendo")
+                        correcto.props.abrir();
+                        revelo.setProps({ continua: true });
+
+                        revelo.exe();
+                    }, no: () => {
+                        if (i.montyHall.asistente) {
+                            i.montyHall.asistente.addMensaje("Haz de nuevo tu eleccion");
+                        }
+                        revelo.exe();
+                    }
+                }, () => {
+                })
+        }
+
+        i.setAcciones((id: string, config: any) => {
+            console.log("REVELACION DE OTORTIORSI", config)
+            if (id == "abrir") {
+                i.setAcciones(() => { })
+                revelo.setProps(config);
+                revelo.setProps({ seguro: true })
+                revelo.exe();
+
+            }
+        });
     });
 
+    revelo.setProps({ seguro: false });
+
     var ayuda = new L_Rombo("ayuda", () => {
-        return "";
+        var respuesta = "";
+        if (ayuda.props.ayuda) {
+            respuesta = "revelarPuerta"
+        } else {
+            respuesta = "revelo2"
+
+        }
+        return respuesta;
+    }, () => {
+
+        if (i.montyHall.asistente) {
+            i.montyHall.asistente.addMensaje("Te puedo ofrecer un trato,  te propongo revelar te una de las puestas te gustaria hacerlo o mantienes tu apuesta?",
+                {
+                    event: "qInputSi",
+                    si: () => {
+                        ayuda.setProps({ ayuda: true })
+
+                        ayuda.exe();
+                    }, no: () => {
+                        ayuda.setProps({ ayuda: false })
+                        ayuda.exe();
+                    }
+                }, () => {
+                })
+        }
     });
 
     var revelo2 = new L_Rombo("revelo2", () => {
+        console.log("QUIERES REVELARLA?????")
         return "";
+    }, () => {
+
     });
 
     var revelarPuerta = new L_Cuadrado("revelarPuerta", () => {
-
+        i.montyHall.inicio.revelarIncorrecta(correcto.props.orden);
     });
 
     var cambiasDesicion = new L_Rombo("cambiasDesicion", () => {
-        return "";
+
+        var respuesta = "";
+        if (cambiasDesicion.props.cambiasDesicion) {
+
+            respuesta = "finGano";
+
+        } else {
+            respuesta = "finPerdio";
+        }
+        return respuesta;
+
+    }, () => {
+        if (i.montyHall.asistente) {
+            i.montyHall.asistente.addMensaje("Te gustaria cambiar tu desicion??",
+                {
+                    event: "qInputSi",
+                    si: () => {
+                        cambiasDesicion.setProps({ cambiasDesicion: true })
+                        cambiasDesicion.exe();
+                    }, no: () => {
+                        cambiasDesicion.setProps({ cambiasDesicion: false })
+                        cambiasDesicion.exe();
+                    }
+                }, () => {
+                })
+        }
     });
 
 
-    var aumentarDificulad = new L_Rombo("finGano", () => {
+    var aumentarDificulad = new L_Rombo("aumentarDificulad", () => {
+        console.log("GANE")
         return "";
     });
 
@@ -88,12 +204,12 @@ var L_MontyHall: Function = (i: inicio): any => {
     });
 
     var finGano = new L_Cuadrado("finGano", () => {
-
+        alert("GANASTE FELICITACIONES")
     });
 
 
     var finPerdio = new L_Cuadrado("finPerdio", () => {
-
+        alert("MEJOR SUERTE LA PROXIMA")
     });
 
 
@@ -121,6 +237,7 @@ var L_MontyHall: Function = (i: inicio): any => {
     init.conect(psaludo);
     psaludo.conect(generarPuertas)
     generarPuertas.conect(explica1);
+
     explica1.conect(correcto);
 
     correcto.conect(revelo);
@@ -144,7 +261,7 @@ var L_MontyHall: Function = (i: inicio): any => {
 
     revelarPuerta.conect(cambiasDesicion);
 
-    cambiasDesicion.conect(correcto);
+    cambiasDesicion.conect(finGano);
     cambiasDesicion.conect(finPerdio);
 
 

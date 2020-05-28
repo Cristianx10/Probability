@@ -17,8 +17,9 @@ const App = () => {
 
 
      
+<Logica /> 
 
-      <Logica /> */}
+*/}
     </div>
   );
 }

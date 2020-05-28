@@ -1,19 +1,15 @@
+import { type } from '../../redux/user/actions/updateUser';
+
 import L_Hilo from './L_Hilo';
 
-
-export interface INotify {
-    notify: (id: string) => void;
-    exe: () => void;
-}
-
-class L_Item implements INotify {
+class L_Item {
 
     id: string;
     orden = 0;
 
     observers: any = {};
     type = 0;
-    props = {
+    props: any = {
         disable: false
     };
 
@@ -37,7 +33,14 @@ class L_Item implements INotify {
     }
 
     destroyHilo() {
+        console.log("murio", this.id)
         this.hilo = undefined;
+    }
+
+    transferHilo(hilo?: L_Hilo) {
+        if (hilo) {
+            this.hilo = hilo;
+        }
     }
 
     getHilo() {
@@ -64,11 +67,36 @@ class L_Item implements INotify {
         return "";
     }
 
+    createMount() { }
+
+    didMount() { }
+
+
     exe() {
+        console.log(this.id, "   INTENTA EJECUTAR A  ", this.hilo)
         if (this.hilo) {
             var id = this.ejecutar(this);
             this.notify(id);
         }
+    }
+
+    exeMachine() {
+        this.createMount();
+        if (this.hilo) {
+            var id = this.ejecutar(this);
+            if (this.type == 0) {
+                this.notify(id);
+            }
+        }
+        this.didMount();
+    }
+
+    exeAll(executable?: boolean) {
+        var init = executable != null ? executable : false;
+        var id = this.ejecutar(this);
+        console.log("Estoy notificando a los >> ", id)
+        this.notifyAll(id, init);
+        //  this.didMount();
     }
 
     setProps(props: any) {
@@ -77,31 +105,43 @@ class L_Item implements INotify {
 
 
     notify(id: string) {
-        var arrayNotyfy: L_Item[] = [];
-        var array = Object.values(this.observers) as L_Item[][];
 
         if (id === "#$all") {
+            var array = Object.values(this.observers) as L_Item[][]
             array.forEach((ar) => {
                 ar.forEach((observer) => {
+                    observer.transferHilo(this.hilo)
                     this.destroyHilo();
-                    observer.initHilo()
-                    if (observer.type == 0) {
-                        observer.exe();
-                    }
+                    observer.exeMachine();
                 })
             });
         } else if (this.observers[id] != null) {
-            arrayNotyfy = this.observers[id] as L_Item[];
+            var arrayNotyfy = this.observers[id] as L_Item[];
             arrayNotyfy.forEach((observer) => {
+                observer.transferHilo(this.hilo)
                 this.destroyHilo();
-                observer.initHilo()
-                if (observer.type == 0) {
-                    observer.exe();
-                }
+                observer.exeMachine();
             })
         }
 
     }
+
+    notifyAll(id: string, init: boolean) {
+        var arrayNotyfy: L_Item[] = [];
+
+        if (this.observers[id] != null) {
+            arrayNotyfy = this.observers[id] as L_Item[];
+            arrayNotyfy.forEach((observer) => {
+                observer.initHilo();
+                if (observer.type == 0 || init) {
+                    observer.exe();
+                }
+
+            })
+        }
+    }
+
+
 }
 
 export default L_Item;

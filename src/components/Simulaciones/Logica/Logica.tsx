@@ -1,37 +1,42 @@
 import React, { useEffect } from "react";
-import Logic from '../../../constants/logic/Logic';
-import L_Rombo from '../../../constants/logic/L_Rombo';
+
 import L_Cuadrado from '../../../constants/logic/L_Cuadrado';
+import L_Rombo from '../../../constants/logic/L_Rombo';
+import Logic from '../../../constants/logic/Logic';
 
 
 const Logica = () => {
 
     var logi = new Logic();
 
-    var saludar = new L_Cuadrado("saludar", () => {
+    var saludar = new L_Rombo("saludar", () => {
         console.log("Te saludo")
-    });
+
+        return "saludo";
+    }, () => { saludo.exe() });
 
     saludar.initHilo();
 
-    var t = false;
     var saludo = new L_Rombo("saludo", (p: any) => {
-        t = !t;
-        var msg = "no";
+        console.log("Saludando")
+      
+        return "si";
+    },()=>{  si.exe();});
 
-        return msg;
-    });
-
-    var si = new L_Cuadrado("si", () => {
+    var si = new L_Rombo("si", () => {
         console.log("Bueno dias");
+
+        return "seguir";
     });
 
-    var no = new L_Cuadrado("no", () => {
+    var no = new L_Rombo("no", () => {
         console.log("Fue grosero");
+        return "";
     });
 
-    var seguir = new L_Cuadrado("seguir", () => {
+    var seguir = new L_Rombo("seguir", () => {
         console.log("Continuo");
+        return "";
     });
 
 
@@ -39,11 +44,15 @@ const Logica = () => {
 
     saludo.conect(si, no);
 
+    si.conect(seguir)
     no.conect(saludar)
 
 
     const btnsaludo = () => {
         saludo.exe();
+    }
+    const siiiii = () => {
+        si.exe();
     }
 
 
@@ -55,7 +64,10 @@ const Logica = () => {
 
 
     }, [])
-    return <div onClick={btnsaludo}>Logica</div>
+    return <div>
+        <div onClick={btnsaludo}>Logica</div>
+        <div onClick={siiiii}>claro</div>
+    </div>
 }
 
 

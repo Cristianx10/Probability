@@ -1,5 +1,6 @@
 import { Graphics, DisplayObject } from 'createjs-module';
 
+import inicio from '../scenes/inicio';
 import { ICJSAlignContainer } from '../../../../constants/createjs/createjsAlignContainer';
 import { CJSContainer } from '../../../../constants/createjs/createjsContainer';
 import CJSShape from '../../../../constants/createjs/createjsShape';
@@ -15,11 +16,12 @@ class Puerta implements ICJSAlignContainer {
 
     caso = new MConteo_Caso();
 
-    scene: CJSScene;
+    scene: inicio;
 
     variacion = 0;
+    orden = 0;
 
-    constructor(scene: CJSScene) {
+    constructor(scene: inicio) {
         this.scene = scene;
 
         this.scene.addChild(this.container);
@@ -54,17 +56,32 @@ class Puerta implements ICJSAlignContainer {
         });
 
         this.container.on("click", () => {
-            if (puerta.stateIDUse != "abierta") {
-                var [premio] = this.f.getShape("premio");
-                puerta.getState("abierta");
-                signo.removeStage();
-                premio.visible = true;
-                this.scene.update();
-                this.scene.ejecutar("abrir", {type:this.});
+
+            var seguro = this.scene.initLogic.revelo.props.seguro;
+
+
+            var acciones: any = { type: this.variacion, orden: this.orden, abrir: this.abrir };
+
+            this.scene.ejecutar("abrir", acciones);
+            if (puerta.stateIDUse != "abierta" && seguro) {
+                this.abrir();
             }
         });
 
     }
+
+
+    abrir() {
+        var [puerta, signo] = this.f.getShape("puerta", "signo");
+
+        var [premio] = this.f.getShape("premio");
+        puerta.getState("abierta");
+        signo.removeStage();
+        premio.visible = true;
+        this.scene.update();
+
+    }
+
 
     draw() {
         var { x, y, width, height } = this.container.getBounds();

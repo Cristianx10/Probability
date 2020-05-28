@@ -9,6 +9,7 @@ import CJSSceneManager from '../../../../constants/createjs/Scene/createjsSceneM
 import { typeProps } from '../../../../constants/probabilidad/conteo/MConteo_Caso';
 import ManagerConteo from '../../../../constants/probabilidad/conteo/ManagerConteo';
 import MConteo_Controller from "../../../../constants/probabilidad/conteo/ManagerConteoController";
+
 import L_MontyHall from "./logic";
 
 class inicio extends CJSScene implements MConteo_Controller {
@@ -18,9 +19,6 @@ class inicio extends CJSScene implements MConteo_Controller {
     montyHall: TS_MontyHall;
     eConteo: ManagerConteo;
     initLogic: any;
-
-    
-
 
 
     constructor(sceneManger: CJSSceneManager, montyHall: TS_MontyHall) {
@@ -51,6 +49,7 @@ class inicio extends CJSScene implements MConteo_Controller {
 
     agregarCaso(type: typeProps) {
         var puerta = new Puerta(this);
+        puerta.orden = this.puertas.length;
         puerta.caso.combineProps(type);
 
         var caso = puerta.caso;
@@ -61,10 +60,12 @@ class inicio extends CJSScene implements MConteo_Controller {
 
         switch (caso.getProp("variacion")) {
             case 0:
+                puerta.variacion = 0;
                 caso.addProp("nombre", { valueSpecific: { singular: "Puerta", plural: "Puertas" } });
                 caso.addProp("contiene", { value: "Cabra" });
                 break;
             case 1:
+                puerta.variacion = 1;
                 caso.addProp("nombre", { valueSpecific: { singular: "Puerta", plural: "Puertas" } });
                 caso.addProp("contiene", { valueSpecific: { singular: "Auto", plural: "Autos" } });
                 break;
@@ -72,6 +73,16 @@ class inicio extends CJSScene implements MConteo_Controller {
 
         return puerta.caso;
 
+    }
+
+    revelarIncorrecta(orden: number) {
+        for (let index = 0; index < this.puertas.length; index++) {
+            let f = this.puertas[index];
+            if (f.orden != orden && f.variacion == 1) {
+                f.abrir();
+                index = this.puertas.length;
+            }
+        }
     }
 
     generarScena() {

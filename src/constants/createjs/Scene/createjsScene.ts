@@ -27,7 +27,7 @@ class CJSScene implements ICJSIsConteiner {
 
 
     ejecutar(id: string, props: any) {
-
+     
         if (this.facciones) {
             this.facciones(id, props);
         }
@@ -35,6 +35,7 @@ class CJSScene implements ICJSIsConteiner {
 
     setAcciones(accion: Function) {
         this.facciones = accion;
+    
     }
 
 

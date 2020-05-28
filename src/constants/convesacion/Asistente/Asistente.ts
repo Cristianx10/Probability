@@ -5,11 +5,13 @@ export interface IIsAsistente {
 }
 
 interface eventMensaje {
-    event?: "script" | "qInput" | "";
+    event?: "script" | "qInput" | "qInputSi" | "";
 }
 
 interface configMensaje extends eventMensaje {
     time?: number;
+    si?: Function;
+    no?: Function;
 }
 
 class Asistente {
@@ -72,6 +74,10 @@ class Asistente {
                     this.showTextScriptTime(m)
                     this.showInput();
                     break;
+                case "qInputSi":
+                    this.showTextScriptTime(m)
+                    this.showInputBol(m);
+                    break;
             }
         }
     }
@@ -82,14 +88,42 @@ class Asistente {
             m.finish();
             this.currentMensajeIndex++;
             this.start();
+        } else {
+            var m = this.mensajes[this.currentMensajeIndex];
+            m.finish();
+            this.currentMensajeIndex++;
         }
     }
 
     showInput() {
         if (this.chatInput) {
+            this.chatInput.innerHTML = "";
             this.chatInput.innerHTML = `
             <input type="text" />
             <button>Responder</button>`
+        }
+    }
+
+    showInputBol(m: Mensaje) {
+        if (this.chatInput) {
+            this.chatInput.innerHTML = "";
+            var btnSi = document.createElement("button");
+            btnSi.innerText = "De acuerdo";
+            var btnNo = document.createElement("button");
+            btnNo.innerText = "No gracias";
+            btnSi.addEventListener("click", () => {
+                if (m.config.si) {
+                    m.config.si();
+                }
+            });
+
+            btnNo.addEventListener("click", () => {
+                if (m.config.no) {
+                    m.config.no();
+                }
+            });
+            this.chatInput.appendChild(btnSi);
+            this.chatInput.appendChild(btnNo);
         }
     }
 
