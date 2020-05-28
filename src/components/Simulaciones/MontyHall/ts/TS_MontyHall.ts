@@ -1,9 +1,10 @@
 import inicio from '../scenes/inicio';
 import { ICJSGetBounds } from '../../../../constants/createjs/createjsAlignContainer';
 import createjsConfig from '../../../../constants/createjs/createjsConfig';
-import Objetivo, { IObjetivos } from '../../../../constants/probabilidad/ManagerObjetivos/Objetivo';
 import Asistente from '../../../../constants/convesacion/Asistente/Asistente';
 import { IIsAsistente } from '../../../../constants/convesacion/Asistente/Asistente';
+import CJSScene from '../../../../constants/createjs/Scene/createjsScene';
+import Objetivo, { IObjetivos } from '../../../../constants/probabilidad/ManagerObjetivos/Objetivo';
 
 
 class TS_MontyHall extends createjsConfig implements ICJSGetBounds, IObjetivos, IIsAsistente {
@@ -12,12 +13,14 @@ class TS_MontyHall extends createjsConfig implements ICJSGetBounds, IObjetivos, 
 
     asistente?: Asistente;
 
+    inicio: inicio;
 
     constructor() {
         super();
         this.size(1280, 720);
 
-        this.scene.addScene(new inicio(this.scene, this), false);
+        this.inicio = new inicio(this.scene, this);
+        this.scene.addScene(this.inicio, false);
         this.update();
     }
 

@@ -20,8 +20,8 @@ class ManagerConteo {
     }
 
     execute() {
-        this.masivo(4, { variacion: 0 }, { variacion: 1 })
-        this.controller.generarScena();
+     //   this.masivo(4, { variacion: 0 }, { variacion: 1 })
+       // this.controller.generarScena();
     }
 
     masivo(cantidad: number, config: typeProps, cofig2: typeProps) {

@@ -15,7 +15,7 @@
         },
         "tareas": [
             {
-                "id": "#saludo",
+                "id": "saySaludo",
                 "condiciones": [
                     "saludos"
                 ],
@@ -25,9 +25,8 @@
                 "respuesta": "Hola ${propsG.userName} espero que te encuentres bien, para la siguiente actividad tenemos preparado una serie de simulaciones que espero sean de tu agrado"
             },
             {
-                "id": "#saludo",
-                "concurrencia": 1,
-                "respuesta": "Hola ${propsG.userName} bienvenido a nuestra probabilitylab, aqui te explicaremos los fundamentos de la probabilidad"
+                "id": "saySaludo",
+                "respuesta": "Como crees que te desempeñas en el campo de la probabilidad"
             }
         ]
     }

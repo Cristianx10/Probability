@@ -69,7 +69,6 @@ class Asistente {
                     this.showTextScriptTime(m)
                     break;
                 case "qInput":
-                    console.log("hgjgjhgjgjhg")
                     this.showTextScriptTime(m)
                     this.showInput();
                     break;

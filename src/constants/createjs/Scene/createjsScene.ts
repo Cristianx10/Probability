@@ -11,6 +11,7 @@ class CJSScene implements ICJSIsConteiner {
     VALUE_BACKGROUND: string = "white";
     active: boolean = false;
     sceneManager?: CJSSceneManager;
+    facciones?: Function;
 
     constructor(sceneManager: CJSSceneManager) {
         this.sceneManager = sceneManager;
@@ -23,6 +24,19 @@ class CJSScene implements ICJSIsConteiner {
     isLoadFiles = false;
     private sceneLoadRequest: Function[] = [];
     private currentSceneLoad = 0;
+
+
+    ejecutar(id: string, props: any) {
+
+        if (this.facciones) {
+            this.facciones(id, props);
+        }
+    }
+
+    setAcciones(accion: Function) {
+        this.facciones = accion;
+    }
+
 
     addChild(...children: createjs.DisplayObject[] | ICJSIsConteiner[]) {
 
@@ -95,12 +109,12 @@ class CJSScene implements ICJSIsConteiner {
 
     getBounds() {
         var bounds = this.container.getBounds();
-        
+
         if (bounds == null) {
             this.container.setBounds(0, 0, 0, 0);
             bounds = this.container.getBounds();
         }
-        
+
         return bounds;
     }
 }

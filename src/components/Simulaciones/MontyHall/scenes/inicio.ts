@@ -9,6 +9,7 @@ import CJSSceneManager from '../../../../constants/createjs/Scene/createjsSceneM
 import { typeProps } from '../../../../constants/probabilidad/conteo/MConteo_Caso';
 import ManagerConteo from '../../../../constants/probabilidad/conteo/ManagerConteo';
 import MConteo_Controller from "../../../../constants/probabilidad/conteo/ManagerConteoController";
+import L_MontyHall from "./logic";
 
 class inicio extends CJSScene implements MConteo_Controller {
 
@@ -16,6 +17,11 @@ class inicio extends CJSScene implements MConteo_Controller {
     puertas: Puerta[] = [];
     montyHall: TS_MontyHall;
     eConteo: ManagerConteo;
+    initLogic: any;
+
+    
+
+
 
     constructor(sceneManger: CJSSceneManager, montyHall: TS_MontyHall) {
         super(sceneManger);
@@ -26,6 +32,8 @@ class inicio extends CJSScene implements MConteo_Controller {
             this.eConteo.mDecision.setAsistente(this.montyHall.asistente)
         }
         this.eConteo.execute()
+
+        this.initLogic = L_MontyHall(this);
     }
 
     nCasosTotal = 0;

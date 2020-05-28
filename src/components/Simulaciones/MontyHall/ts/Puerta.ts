@@ -3,10 +3,10 @@ import { Graphics, DisplayObject } from 'createjs-module';
 import { ICJSAlignContainer } from '../../../../constants/createjs/createjsAlignContainer';
 import { CJSContainer } from '../../../../constants/createjs/createjsContainer';
 import CJSShape from '../../../../constants/createjs/createjsShape';
+import CJSScene from '../../../../constants/createjs/Scene/createjsScene';
 import MConteo_Caso from '../../../../constants/probabilidad/conteo/MConteo_Caso';
 
 import TS_MontyHall from './TS_MontyHall';
-import CJSScene from '../../../../constants/createjs/Scene/createjsScene';
 
 class Puerta implements ICJSAlignContainer {
 
@@ -16,6 +16,8 @@ class Puerta implements ICJSAlignContainer {
     caso = new MConteo_Caso();
 
     scene: CJSScene;
+
+    variacion = 0;
 
     constructor(scene: CJSScene) {
         this.scene = scene;
@@ -33,9 +35,6 @@ class Puerta implements ICJSAlignContainer {
         return this.container.container;
     }
 
-
-
-
     mouseEvent() {
         var [puerta, signo] = this.f.getShape("puerta", "signo");
 
@@ -43,6 +42,7 @@ class Puerta implements ICJSAlignContainer {
             if (puerta.stateIDUse != "abierta") {
                 puerta.getState("sobre");
                 this.scene.update();
+
             }
         });
 
@@ -60,7 +60,7 @@ class Puerta implements ICJSAlignContainer {
                 signo.removeStage();
                 premio.visible = true;
                 this.scene.update();
-
+                this.scene.ejecutar("abrir", {type:this.});
             }
         });
 
@@ -72,33 +72,33 @@ class Puerta implements ICJSAlignContainer {
 
         puerta.state["cerrada"] = new Graphics()
             .beginFill("#E5E5E5")
-            .rect(x, y, width, height)
+            .rect(0, 0, width, height)
             .endFill()
             .beginStroke("#FF9600")
             .setStrokeStyle(20)
-            .rect(x, y, width, height);
+            .rect(0, 0, width, height);
 
         puerta.state["sobre"] = new Graphics()
             .beginFill("#F6F6F6")
-            .rect(x, y, width, height)
+            .rect(0, 0, width, height)
             .endFill()
             .beginStroke("#FF9600")
             .setStrokeStyle(20)
-            .rect(x, y, width, height);
+            .rect(0, 0, width, height);
 
         puerta.state["abierta"] = new Graphics()
             .beginFill("#F6F6F6")
-            .rect(x, y, width, height)
+            .rect(0, 0, width, height)
             .beginFill("#DFDFDF")
-            .rect(x + 20, y + height * .1, width * .8, height * .8)
+            .rect(20, height * .1, width * .8, height * .8)
             .beginFill("#CBC8C8")
-            .rect(x + 50, y + height * .2, width * .6, height * .6)
+            .rect(50, height * .2, width * .6, height * .6)
             .beginFill("#9D9B9B")
-            .rect(x + 80, y + height * .3, width * .4, height * .4)
+            .rect(80, height * .3, width * .4, height * .4)
             .endFill()
             .beginStroke("#FF9600")
             .setStrokeStyle(20)
-            .rect(x, y, width, height);
+            .rect(0, 0, width, height);
 
         puerta.getState("cerrada");
 
@@ -107,7 +107,7 @@ class Puerta implements ICJSAlignContainer {
         var con = this.caso.getProp("contiene", "string");
 
 
-        premio.graphics.beginFill(con == "Auto" ? "blue" : "red").drawCircle(x + (width / 2), y + (height / 2), width * .3);
+        premio.graphics.beginFill(con == "Auto" ? "blue" : "red").drawCircle((width / 2), (height / 2), width * .3);
         premio.visible = false;
 
         this.scene.update();
@@ -125,8 +125,8 @@ class Puerta implements ICJSAlignContainer {
         var [signo] = this.f.getText("signo");
         let b = signo.getBounds();
 
-        signo.x = x + (width / 2) - (b.width / 2);
-        signo.y = y + (height / 2) - (b.height / 2);
+        signo.x = (width / 2) - (b.width / 2);
+        signo.y = (height / 2) - (b.height / 2);
 
 
         this.scene.update();

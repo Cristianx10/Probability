@@ -76,7 +76,7 @@ class DecisionManager {
 
 
             if (c.condiciones) {
-                var condiArray = Object.entries(c.props);
+                var condiArray = Object.entries(c.condiciones);
                 condiArray.forEach((c: any) => {
                     accion.condiciones.push({ id: c[0], condicion: c[1] });
                 });
@@ -91,7 +91,7 @@ class DecisionManager {
 
 
             if (c.tareas) {
-                
+
                 for (let j = 0; j < c.tareas.length; j++) {
                     var d = c.tareas[j]
 
@@ -99,47 +99,38 @@ class DecisionManager {
                     var res: IStructureTask = {
                         id: miId,
                         respuesta: d.respuesta,
-                        condiciones: [],
-                        acciones: []
+                        condiciones: d.condiciones ? d.condiciones : [],
+                        acciones: d.acciones ? d.acciones : []
                     };
 
                     if (accion.tareas[d.id] == null) {
                         accion.tareas[d.id] = [];
                     }
-                    
+
                     accion.tareas[d.id].push(res);
-                    
+
                 }
             }
-
-       
             this.acciones.push(accion);
-
-            console.log("MIS TAREAS", accion)
         }
-    
-       
+
     }
 
     ejecutarAccion(id: string, toDo: Function) {
         for (let i = 0; i < this.acciones.length; i++) {
             let accion = this.acciones[i];
 
-        
+
             if (accion.id == id) {
 
-                var { getProp, props } = accion;
-                var propsG = mente.props;
-
                 var tareas = Object.values(accion.tareas) as IStructureTask[][];
-
-            
 
                 tareas.forEach((tarea) => {
 
                     tarea.forEach((t, index: number) => {
 
-                        console.log("MI TAREA", t)
+                        var props = accion.props;
+                        var propsG = mente.props;
 
                         var id = t.id;
 
@@ -147,15 +138,15 @@ class DecisionManager {
 
                         var condicionFinal = true;
 
-                        var actionFinal = () => { };
+                        var actionFinal = [];
 
                         for (let k = 0; k < t.condiciones.length; k++) {
                             let condicion = t.condiciones[k];
+
                             for (let m = 0; m < accion.condiciones.length; m++) {
                                 let condicionLocal = accion.condiciones[m];
 
                                 if (condicion == condicionLocal.id) {
-                                  
                                     condicionFinal = eval(condicionLocal.condicion);
                                     m = accion.condiciones.length;
                                 }
@@ -168,20 +159,16 @@ class DecisionManager {
                             for (let m = 0; m < accion.acciones.length; m++) {
                                 let actionLocal = accion.acciones[m];
 
-
                                 if (action == actionLocal.id) {
-
-                                    actionFinal = eval(`()=>{${actionLocal.accion}}`);
+                                    actionFinal.push(eval(`(accion)=>{${actionLocal.accion} if(accion){accion()}}`));
                                     m = accion.acciones.length;
                                 }
 
                             }
                         }
 
-                        console.log("MIS ACCIOENS", accion.acciones)
-
                         if (condicionFinal) {
-                            toDo(id, respuesta, actionFinal);
+                            toDo({ id, respuesta, acciones: actionFinal });
                         }
 
 
