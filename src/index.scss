@@ -1,9 +1,143 @@
-*{
+* {
     box-sizing: border-box;
     margin: 0;
 }
 
-html, body, #root{
+html,
+body,
+#root {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
+}
+
+h1 {
+    margin: 0;
+}
+
+.valign-top {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.valign-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.row.h1 {
+    height: 8%;
+}
+
+.row.h2 {
+    height: 16%;
+}
+
+.row.h3 {
+    height: 25%;
+}
+
+.row.h4 {
+    height: 33%;
+}
+
+.row.h5 {
+    height: 41%;
+}
+
+.row.h6 {
+    height: 50%;
+}
+
+.row.h7 {
+    height: 58%;
+}
+
+.row.h8 {
+    height: 66%;
+}
+
+.row.h9 {
+    height: 75%;
+}
+
+.row.h10 {
+    height: 83%;
+}
+
+.row.h11 {
+    height: 91%;
+}
+
+.row.h12 {
+    height: 100%;
+}
+
+.row.w1 {
+    width: 8%;
+}
+
+.row.w2 {
+    width: 16%;
+}
+
+.row.w3 {
+    width: 25%;
+}
+
+.row.w4 {
+    width: 33%;
+}
+
+.row.w5 {
+    width: 41%;
+}
+
+.row.w6 {
+    width: 50%;
+}
+
+.row.w7 {
+    width: 58%;
+}
+
+.row.w8 {
+    width: 66%;
+}
+
+.row.w9 {
+    width: 75%;
+}
+
+.row.w10 {
+    width: 83%;
+}
+
+.row.w11 {
+    width: 91%;
+}
+
+.row.w12 {
+    width: 100%;
+}
+
+
+.background-imgae{
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.input-field{
+    input{
+        position: relative;
+        z-index: 1;
+    }
+    label{
+        position: absolute;
+        z-index: 0;
+    }
 }
