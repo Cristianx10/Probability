@@ -1,0 +1,17 @@
+{
+    "app": {
+        "users": {
+            "information": {},
+            "metricas": {}
+        },
+        "servidor": {
+            "blackjack": {
+                "private": {},
+                "publico": {}
+            }
+        },
+        "simulations": {
+            "blackjack": {}
+        }
+    }
+}
