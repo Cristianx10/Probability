@@ -14,10 +14,10 @@ class Mente {
         
         if (index != null) {
             this.props[id][index] = value;
-            console.log("Modificado", this.props[id])
+           // console.log("Modificado", this.props[id])
         } else {
             this.props[id].push(value);
-            console.log("A;adido", this.props[id])
+         //   console.log("A;adido", this.props[id])
         }
      
     }
