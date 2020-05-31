@@ -4,6 +4,8 @@ import BarajaManger from '../ts/BarajaManager';
 import Jugador from '../ts/Jugador';
 import { FCJSAlignCenterCenter, FCJSAlignDistLeft } from '../../../../constants/createjs/createjsAlignContainer';
 import { shuffle } from '../../../../constants/helpers/helpers';
+import ServerGlobal from '../../../../constants/multiplayer/ServerGlobal';
+import prop from '../../../../constants/multiplayer/prop';
 import CJSScene from '../../../../constants/createjs/Scene/createjsScene';
 import CJSSceneManager from '../../../../constants/createjs/Scene/createjsSceneManager';
 
@@ -13,8 +15,20 @@ class juego extends CJSScene {
     crupier: Jugador;
     jugadores: Jugador[];
 
+    servidor: ServerGlobal;
+    movidas: prop<number>;
+
     constructor(sceneManager: CJSSceneManager) {
         super(sceneManager);
+
+        this.servidor = new ServerGlobal();
+
+        this.movidas = this.servidor.state(0);
+
+
+        console.log(this.servidor)
+
+        this.movidas.set(this.movidas.get() + 1);
 
         this.isLoadFiles = true;
 
@@ -33,7 +47,7 @@ class juego extends CJSScene {
         var c = new Jugador(this);
         this.jugadores.push(a);
         this.jugadores.push(c);
-        FCJSAlignDistLeft({ x: 200, y: 400 }, this.jugadores, {padding:300});
+        FCJSAlignDistLeft({ x: 200, y: 400 }, this.jugadores, { padding: 300 });
 
         this.barajaManager.load(() => {
             var cartas = this.barajaManager.generarCartas(1);
@@ -56,19 +70,6 @@ class juego extends CJSScene {
 
 
             this.update();
-
-            /*
-
-            cartas.forEach((carta, i) => {
-                this.addChild(carta.graphics);
-            });
-
-            FCJSAlignCenterCenter(this, cartas, 170, 130, {anim:"continuo"});
-
-            this.update();
-
-            console.log("TODO ESTA CARGADO")
-*/
 
         })
 
