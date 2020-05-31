@@ -1,6 +1,7 @@
 
-import createjsConfig from '../../../../constants/createjs/createjsConfig';
 import juego from '../scene/juego';
+import Sofia from '../../../../constants/Sofia/Sofia';
+import createjsConfig from '../../../../constants/createjs/createjsConfig';
 
 
 class TS_Blackjack extends createjsConfig {
@@ -13,8 +14,10 @@ class TS_Blackjack extends createjsConfig {
 
 
         this.scene.addScene(new juego(this.scene))
-      
-        this.update()
+
+        this.update();
+
+
     }
 
 
