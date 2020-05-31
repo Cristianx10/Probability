@@ -1,15 +1,64 @@
-import React, { useState } from "react";
-import TS_Blackjack from './ts/TS_Blackjack';
-import Canvas from "../../Canvas/Canvas";
+import React, { useState, Props, createContext, useContext, useReducer } from "react";
+import Modo from "./pages/Modo/Modo";
+
+import "./Blackjack.scss";
+import Multiplayer from "./pages/Multiplayer/Multiplayer";
+import Solitario from "./pages/Solitario/Solitario";
+import Simulacion from "./pages/Simulacion/Simulacion";
+
+
+interface INav {
+    page: string;
+}
+
+
+export const NavegationContext = createContext<{ setPage: (page: "Inicio" | "Mutiplayer" | "Solitario" | "Simulacion") => void }>({
+    setPage: (page: "Inicio" | "Mutiplayer" | "Solitario" | "Simulacion") => { }
+});
+
+var initNavigation: INav = {
+    page: "Inicio"
+};
+
+function reducer(state: INav, action: string) {
+    return { page: action };
+}
+
 
 const Blackjack = () => {
 
-    var [TBlackjack] = useState(new TS_Blackjack);
+    // const [page, setPage] = useState<"inicio">("inicio");
 
-    return (<div>
-        <h1>Blackjack</h1>
-        <Canvas canvas={TBlackjack} />
-    </div>);
+    const navegation = useContext(NavegationContext);
+    const [state, dispatch] = useReducer(reducer, initNavigation);
+
+    var viewPage = <></>;
+
+
+    switch (state.page) {
+        case "Inicio":
+            viewPage = <Modo />
+            break;
+        case "Mutiplayer":
+            viewPage = <Multiplayer />
+            break;
+        case "Solitario":
+            viewPage = <Solitario />
+            break;
+        case "Simulacion":
+            viewPage = <Simulacion />
+            break;
+
+    }
+
+    return (
+        <NavegationContext.Provider value={{ setPage: dispatch }}>
+            <div className="Blackjack" >
+                {viewPage}
+            </div>
+        </NavegationContext.Provider>
+    )
 }
 
 export default Blackjack;
+
