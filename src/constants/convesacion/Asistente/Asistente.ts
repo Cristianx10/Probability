@@ -108,8 +108,11 @@ class Asistente {
         if (this.chatInput) {
             this.chatInput.innerHTML = "";
             var btnSi = document.createElement("button");
+            btnSi.className = "waves-effect waves-light btn-large";
             btnSi.innerText = "De acuerdo";
             var btnNo = document.createElement("button");
+            btnNo.className = "waves-effect waves-light btn-large orange";
+
             btnNo.innerText = "No gracias";
             btnSi.addEventListener("click", () => {
                 if (m.config.si) {
