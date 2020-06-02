@@ -1,4 +1,6 @@
 import { createStore, combineReducers } from "redux";
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from "redux-persist/lib/storage";
 
 import sUser from "./user/sUser";
 import sAsistente from "./asistente/sAsistente";
@@ -8,8 +10,16 @@ const reducer = combineReducers({
     sAsistente
 });
 
-export var Store = createStore(reducer);
 
+const persisConfig = {
+    key: "root",
+    storage
+}
+
+const persistReducerConfig = persistReducer(persisConfig, reducer);
+
+const Store = createStore(persistReducerConfig) ;
+export const persistor = persistStore(Store as any);
 
 export default Store;
 

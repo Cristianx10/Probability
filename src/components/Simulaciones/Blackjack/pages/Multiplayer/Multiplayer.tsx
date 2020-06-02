@@ -18,7 +18,8 @@ const Multiplayer = () => {
 
     const createServer = () => {
 
-        var route = DB_ROUTES.servidor._this;
+        var route = DB_ROUTES.servidor.blackjack._this;
+    
         server.createServer(route, name, publico);
 
         setPage("Simulacion");
@@ -66,7 +67,7 @@ const Multiplayer = () => {
 
             <div className="col s6 valign-center section">
                 <div className="input-field">
-                    <input id="name_server" type="text" className="validate white-text" onChange={onChangeName} />
+                    <input id="server_name" type="text" className="validate white-text" onChange={onChangeName} />
                     <label>Nombre del server</label>
                 </div>
 

@@ -1,47 +1,33 @@
-import Firebase from '../firebase';
-import DB_ROUTES from '../Database/Database_Routes';
-import Database from '../Database/Database';
+import { IFirebase_User } from './UserFirebase';
+class User {
 
-interface IFirebase_User {
-    name: string
-}
-
-
-class user_firebase {
-
-    user?: firebase.User;
+    UID = "";
+    name = "";
+    genero = "";
+    edad = "";
+    email = "";
+    account = "";
+    registerComplete = true;
+    date = { creation: 0 }
 
     constructor() {
 
 
+
     }
 
-    getUserChangeDataBase(load?: (login: boolean) => void) {
-        if (this.user == null) {
-            Firebase.auth().onAuthStateChanged((user: firebase.User | null) => {
-                if (user) {
-                    // User is signed in.
-                    this.user = user;
-                    load && load(true);
-                } else {
-                    // No user is signed in.
-                    load && load(false);
-                }
-            });
-        }
+    getUserProps(user: IFirebase_User) {
+        var { UID, email, account, registerComplete, date } = user;
+        this.UID = UID;
+        this.account = account;
+        this.email = email;
+        this.registerComplete = registerComplete;
+        this.date = date;
+
+        console.log("SOY UN USUARIO", this)
     }
 
-    writeUserData(user: IFirebase_User) {
-        if (this.user) {
-            let ruta = DB_ROUTES.users.information._this;
 
-            let dataUser = JSON.parse(JSON.stringify(user));
-            Database.writeDatabase(ruta, dataUser);
-        }
-    }
 }
 
-var UserFirebase = new user_firebase();
-
-
-export default UserFirebase;
+export default User;
