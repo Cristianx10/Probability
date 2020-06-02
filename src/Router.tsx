@@ -11,6 +11,9 @@ import {
 import { BrowserRouter } from 'react-router-dom';
 
 import UserFirebase from './constants/firebase/User/UserFirebase';
+import Header from './components/Header/Header';
+import { useSelector } from 'react-redux';
+import { IStore } from './redux/Store';
 
 
 const App = loadable(() => import('./components/App/App'));
@@ -19,27 +22,13 @@ const SplatScreen = loadable(() => import('./components/SplatScreen/SplatScreen'
 const Registro = loadable(() => import('./components/Registro/Registro/Registro'));
 
 const Router = () => {
-
-    const [completeRegister, setCompleteRegister] = useState(false)
-
-    useEffect(() => {
-
-        UserFirebase.getUserChangeLocal((login: boolean) => {
-            if (login) {
-                UserFirebase.registerGoogle((register) => {
-                    if (!register) {
-                        setCompleteRegister(true)
-                    }
-                });
-            }
-        })
-
-
-    }, []);
+    
+    const user = useSelector((store:IStore) => store.sUser);
 
 
     return <BrowserRouter>
-        {completeRegister && <Redirect to="/signup" />}
+        {user.session_Active === "goToSign" && <Redirect to="/signup" />}
+        <Header />
         <Switch>
             <Route path="/" component={SplatScreen} exact></Route>
 

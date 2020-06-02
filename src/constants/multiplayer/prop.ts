@@ -1,12 +1,13 @@
 class prop<T> {
 
+    UID: string = "";
     private value: T;
 
     constructor(value: T) {
         this.value = value;
     }
 
-    get(){
+    get() {
         return this.value;
     }
 

@@ -23,7 +23,7 @@ class juego extends CJSScene {
 
         this.servidor = new ServerGlobal();
 
-        this.movidas = this.servidor.state(0);
+        this.movidas = this.servidor.setProp("movidas", 0);
 
 
         console.log(this.servidor)

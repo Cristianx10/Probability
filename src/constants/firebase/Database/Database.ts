@@ -51,7 +51,7 @@ class database__Object {
             var exist = false;
             var key = snapshot.key || "";
 
-    
+
 
             console.log(key, val, id)
             if (snapshot.exists()) {
@@ -79,8 +79,8 @@ class database__Object {
         });
     }
 
-    writeDatabase(url: string, objeto: Object) {
-        Firebase.database().ref(url).set(objeto);
+    writeDatabase(url: string, objeto: Object, load?: () => void) {
+        Firebase.database().ref(url).set(objeto, load);
     }
 
     writeDatabasePush(url: string, objeto: any) {

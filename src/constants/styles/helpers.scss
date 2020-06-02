@@ -1,0 +1,181 @@
+
+.valign-top {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.valign-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.col.h0,
+.h0,
+.row.h0 {
+    height: auto;
+}
+
+.col.h1,
+.h1,
+.row.h1 {
+    height: 8%;
+}
+
+.col.h2,
+.h2,
+.row.h2 {
+    height: 16%;
+}
+
+.col.h3,
+.h3,
+.row.h3 {
+    height: 25%;
+}
+
+.col.h4,
+.h4,
+.row.h4 {
+    height: 33%;
+}
+
+.col.h5,
+.h5,
+.row.h5 {
+    height: 41%;
+}
+
+.col.h6,
+.h6,
+.row.h6 {
+    height: 50%;
+}
+
+.col.h7,
+.h7,
+.row.h7 {
+    height: 58%;
+}
+
+.col.h8,
+.h8,
+.row.h8 {
+    height: 66%;
+}
+
+.col.h9,
+.h9,
+.row.h9 {
+    height: 75%;
+}
+
+.col.h10,
+.h10,
+.row.h10 {
+    height: 83%;
+}
+
+.col.h11,
+.h11,
+.row.h11 {
+    height: 91%;
+}
+
+.col.h12,
+.h12,
+.row.h12 {
+    height: 100%;
+}
+
+.col.w1,
+.w1,
+.row.w1 {
+    width: 8%;
+}
+
+.col.w2,
+.w2,
+.row.w2 {
+    width: 16%;
+}
+
+.col.w3,
+.w3,
+.row.w3 {
+    width: 25%;
+}
+
+.col.w4,
+.w4,
+.row.w4 {
+    width: 33%;
+}
+
+.col.w5,
+.w5,
+.row.w5 {
+    width: 41%;
+}
+
+.col.w6,
+.w6,
+.row.w6 {
+    width: 50%;
+}
+
+.col.w7,
+.w7,
+.row.w7 {
+    width: 58%;
+}
+
+.col.w8,
+.w8,
+.row.w8 {
+    width: 66%;
+}
+
+.col.w9,
+.w9,
+.row.w9 {
+    width: 75%;
+}
+
+.col.w10,
+.w10,
+.row.w10 {
+    width: 83%;
+}
+
+.col.w11,
+.w11,
+.row.w11 {
+    width: 91%;
+}
+
+.col.w12,
+.w12,
+.row.w12 {
+    width: 100%;
+}
+
+.background-imgae {
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.input-field {
+    input,
+    select {
+        position: relative;
+        z-index: 1;
+    }
+    label {
+        position: absolute;
+        z-index: 0;
+    }
+}

@@ -26,6 +26,7 @@ const Registro = () => {
 
 
     const refEmail = useRef<HTMLElement | any>();
+    const refName = useRef<HTMLElement | any>();
 
 
 
@@ -103,9 +104,9 @@ const Registro = () => {
         var elems = document.querySelectorAll('select');
         var instances = M.FormSelect.init(elems, {});
 
-        UserFirebase.getUserChangeDatabase(() => {
-
+        const updateInformation = () => {
             if (!UserFirebase.user.registerComplete) {
+                var user_name = UserFirebase.user.name;
                 var user_email = UserFirebase.user.email;
                 var user_account = UserFirebase.user.account;
 
@@ -116,29 +117,43 @@ const Registro = () => {
                     ref.querySelector("input").disabled = true;
                     ref.querySelector("label").classList.add("active");
                     ref.querySelector("i").classList.add("active");
-
                 }
+
+                if (refName && refName.current) {
+                    var refe = (refName.current) as HTMLElement | any;
+                    refe.querySelector("input").value = user_name;
+                    refe.querySelector("label").classList.add("active");
+                    refe.querySelector("i").classList.add("active");
+                }
+                setName(user_name);
                 setEmail(user_email);
                 setAccount(user_account);
-
             }
-        })
+        }
 
+        UserFirebase.event.getEvent("redirectGoogle", () => {
+            updateInformation();
+        });
+
+        UserFirebase.event.getEvent("loadUserDatabase", () => {
+            updateInformation();
+        });
 
     }, [])
 
     return <div className="Registro">
-
-        {registeComplete === "1" && <h1>YA CASI ESTA COMPLETO</h1>}
         <div className="Registro__container w8 h10 z-depth-2">
             <div className="row w9">
-                <div className="section input-field col s12">
+                <div className="col s12">
+                    <h3>Has parte de nuestra comunidad</h3>
+                </div>
+                <div className="section input-field col s12 m6" ref={refName}>
                     <i className="material-icons prefix">assignment_ind</i>
                     <input id="first_name" type="text" className="validate" onChange={onChangeName} />
                     <label>Nombre de usuario</label>
 
                 </div>
-                <div className="section input-field col s12">
+                <div className="section input-field col s12 m6">
                     <i className="material-icons prefix">face</i>
                     <input id="first_name" type="text" className="validate" onChange={onChangeNickName} />
                     <label>Nickname o apodo</label>
@@ -150,13 +165,15 @@ const Registro = () => {
                     {repeatUser.repeat &&
                         <span className="red-text">* El nombre de usuario ya existe intente otro.</span>}
                 </div>
-                <div className="section input-field col s12">
+
+
+                <div className="section input-field col s12 m6">
                     <i className="material-icons prefix">insert_invitation</i>
                     <input id="first_name" type="number" className="validate" onChange={onChangeEdad} />
                     <label>Edad</label>
                 </div>
 
-                <div className="section input-field col s12">
+                <div className="section input-field col s12 m6">
                     <i className="material-icons prefix">account_circle</i>
                     <select defaultValue="" onChange={onChangeGenero}>
                         <option value="">¿Cuál es tu genero?</option>
@@ -167,6 +184,7 @@ const Registro = () => {
                     <label>Genero</label>
                 </div>
 
+
                 <div className="section input-field col s12" ref={refEmail}>
                     <i className="material-icons prefix">mail_outline</i>
                     <input className="validate"
@@ -176,21 +194,32 @@ const Registro = () => {
                     <label data-error="wrong" data-success="right">Email</label>
                 </div>
 
-                {account == "local" && <div className="section input-field col s12">
-                    <i className="material-icons prefix">lock_outline</i>
-                    <input id="password"
-                        onChange={onChangePass}
-                        type="password" defaultValue={""} />
-                    <label >Password</label>
-                </div>}
+                {account == "local" && <>
+                    <div className="section input-field col s6">
+                        <i className="material-icons prefix">lock_outline</i>
+                        <input id="password"
+                            onChange={onChangePass}
+                            type="password" defaultValue={""} />
+                        <label >Contraseña</label>
+                    </div>
+                    <div className="section input-field col s6">
+                        <i className="material-icons prefix">lock_outline</i>
+                        <input id="password"
+                            onChange={onChangePass}
+                            type="password" defaultValue={""} />
+                        <label >Confirmar contraseña</label>
+                    </div>
+                </>
+                }
 
 
 
-                <div className="input-field w12" onClick={redirectIndex}>
+                <div className="input-field col s12 m6" onClick={redirectIndex}>
                     <a href="#" className="btn waves-effect waves-light col large s12">Register</a>
+
                 </div>
 
-                <div className="input-field w12">
+                <div className="input-field col s12 m6">
 
                     <a href="#"
                         onClick={redirectGoogle}
@@ -199,20 +228,6 @@ const Registro = () => {
                             Registrase con Google
                             </a>
                 </div>
-
-                <div className="input-field w12">
-                    <a href="#"
-                        onClick={() => {
-                            UserFirebase.logout();
-                        }
-                        }
-                        className="btn red waves-effect waves-light col large s12">
-                        <i className="material-icons left">email</i>
-                            Cerrar sessión
-                    </a>
-                </div>
-
-
 
             </div>
 

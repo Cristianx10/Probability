@@ -10,7 +10,10 @@ import Databse from './constants/firebase/Database/Database';
 
 import "materialize-css";
 import "materialize-css/dist/css/materialize.min.css"
+
 import "./index.scss";
+import "./constants/styles/responsive.scss";
+import "./constants/styles/helpers.scss";
 
 Databse.inicializate();
 

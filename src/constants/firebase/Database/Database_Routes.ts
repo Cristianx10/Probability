@@ -55,7 +55,11 @@ const DB_ROUTES = {
     simulations: {
         _this: simulations,
         blackjack: {
-            _this: simulations + "/blackjack"
+            _this: simulations + "/blackjack",
+            servidor: "",
+            data: {
+                juegadores: []
+            }
         }
     },
 

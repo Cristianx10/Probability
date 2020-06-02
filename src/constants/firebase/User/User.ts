@@ -16,15 +16,19 @@ class User {
 
     }
 
-    getUserProps(user: IFirebase_User) {
-        var { UID, email, account, registerComplete, date } = user;
-        this.UID = UID;
-        this.account = account;
-        this.email = email;
-        this.registerComplete = registerComplete;
-        this.date = date;
+    getUserProps(user?: IFirebase_User) {
+        if (user) {
+            var { UID, email, account, registerComplete, date, name } = user;
+            this.name = name;
+            this.UID = UID;
+            this.account = account;
+            this.email = email;
+            this.registerComplete = registerComplete;
+            this.date = date;
 
-        console.log("SOY UN USUARIO", this)
+            console.log("SOY UN USUARIO", this)
+        }
+
     }
 
 

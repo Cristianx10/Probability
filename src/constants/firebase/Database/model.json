@@ -11,7 +11,12 @@
             }
         },
         "simulations": {
-            "blackjack": {}
+            "blackjack": {
+                "212131321":{
+                    "servidor":"34242342342342",
+                    "data":"3424324209"
+                }
+            }
         }
     }
 }

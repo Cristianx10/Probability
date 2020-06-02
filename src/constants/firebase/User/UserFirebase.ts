@@ -5,6 +5,10 @@ import Database from '../Database/Database';
 import DB_ROUTES from '../Database/Database_Routes';
 
 import User from './User';
+import Store from "../../../redux/Store";
+
+import { type as changeSessionActive } from "../../../redux/user/actions/changeSessionActive";
+import EventManager from '../../helpers/EventsManager';
 
 export interface IFirebase_User {
     UID: string;
@@ -30,14 +34,21 @@ class user_firebase {
     private userFirebase?: firebase.User;
     private auth: firebase.auth.Auth;
     user: User;
+    event: EventManager<"redirectGoogle" | "loadUserDatabase" | "loadUserFirebase">;
+
 
     constructor() {
         this.auth = Firebase.auth();
         this.user = new User();
+        this.event = new EventManager();
         this.getUserChangeLocal();
+        this.getUserChangeDatabase(() => {
+            if (this.user.registerComplete == false) {
+                Store.dispatch({ type: changeSessionActive, payload: "goToSign" });
+            }
+        });
         this.loginGoogle(() => { });
     }
-
 
     login(user: string, password: string) {
         this.auth.signInWithEmailAndPassword(user, password);
@@ -69,11 +80,14 @@ class user_firebase {
 
             var route = DB_ROUTES.users.data._this + "/" + UID;
             var localRoute = route;
-
-            Database.readBrachOnlyDatabase(localRoute, (user) => {
+            console.log("BUSCANDO EN> ", route)
+            Database.readBrachOnlyDatabase(route, (user) => {
                 var usuario: IFirebase_User = user.val();
-                this.user.getUserProps(usuario);
-                load(usuario.registerComplete);
+                if (usuario) {
+                    console.log("ESTE ES MI USUARIOS ", usuario)
+                    this.user.getUserProps(usuario);
+                    load(usuario.registerComplete);
+                }
             })
         }
     }
@@ -90,13 +104,11 @@ class user_firebase {
                 var route = DB_ROUTES.users.data._this + "/" + UID;
 
                 Database.evalueteRouteExist(route, (exist) => {
-                    //  UserFirebase.createUser()
                     if (exist) {
 
                     } else {
                         UserFirebase.createUser(UID, email, "google", name);
                     }
-
                     load(user, exist);
 
                 });
@@ -122,6 +134,7 @@ class user_firebase {
                     // User is signed in.
                     this.userFirebase = user;
                     load && load(true);
+                    this.event.exeEvent("loadUserFirebase");
                 } else {
                     // No user is signed in.
                     load && load(false);
@@ -131,21 +144,17 @@ class user_firebase {
     }
 
     getUserChangeDatabase(load: () => void) {
-        if (this.userFirebase) {
-            var route = DB_ROUTES.users.data._this + "/" + this.userFirebase.uid;
-            Database.readBrachOnlyDatabase(route, (data) => {
-                var u = data.val() as User;
-                this.user.getUserProps(u);
-                load();
-            });
-        } else {
-            this.getUserChangeLocal((login) => {
-                if (login) {
-                    this.getUserChangeDatabase(load);
-                }
-            })
-            //. throw new Error("ES NECESARIO OBTENER UN USUARIO PARA CARGAR")
-        }
+        this.event.getEvent("loadUserFirebase", () => {
+            if (this.userFirebase) {
+                var route = DB_ROUTES.users.data._this + "/" + this.userFirebase.uid;
+                Database.readBrachOnlyDatabase(route, (data) => {
+                    var u = data.val() as User;
+                    this.user.getUserProps(u);
+                    this.event.exeEvent("loadUserDatabase");
+                    load();
+                });
+            }
+        });
 
     }
 
@@ -177,12 +186,17 @@ class user_firebase {
 
         var route = DB_ROUTES.users.data._this + temUID;
 
-        Database.writeDatabase(route, userFirebaseDatabse);
+        Database.writeDatabase(route, userFirebaseDatabse, () => {
+            this.user.getUserProps(userFirebaseDatabse);
+            this.event.exeEvent("redirectGoogle");
+        });
 
         //TENER EN CUENTA MAYUSCULAS
         /*    Database.writeDatabase(DB_ROUTES.users.namesUser._this + "/" + 
                 , )*/
     }
+
+
 }
 
 var UserFirebase = new user_firebase();
