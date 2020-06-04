@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 
-
-
-import "./Registro.scss";
 import Database from '../../../constants/firebase/Database/Database';
 import DB_ROUTES from '../../../constants/firebase/Database/Database_Routes';
 import UserFirebase from '../../../constants/firebase/User/UserFirebase';
+import { type as changeSessionActive } from "../../../redux/user/actions/changeSessionActive";
 
+import "./Registro.scss";
+import Store from "../../../redux/Store";
+import Firebase from '../../../constants/firebase/firebase';
+import { Redirect } from 'react-router-dom';
 
 var waitEvent: NodeJS.Timeout | any = undefined;
 
@@ -17,10 +19,14 @@ const Registro = () => {
     const [account, setAccount] = useState("local")
     const [genero, setGenero] = useState("");
     const [email, setEmail] = useState("");
-    const [pass, setPass] = useState("");
+
     const [repeatUser, serRepeatUser] = useState({ find: false, repeat: false });
     const [name, setName] = useState("");
     const [nickName, setNickName] = useState("");
+    const [goToIndex, setGoToIndex] = useState(false);
+
+    const [pass, setPass] = useState("");
+    const [confirmpass, setConfirmPass] = useState("");
 
     const [registeComplete, setRegisterComplete] = useState("0");
 
@@ -58,6 +64,13 @@ const Registro = () => {
         }
     }
 
+    const onChangeConfirPass = (event: React.ChangeEvent<HTMLInputElement>) => {
+        var target = event.target;
+        if (target) {
+            setConfirmPass(target.value)
+        }
+    }
+
     const onChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
         var target = event.target;
         if (target) {
@@ -81,15 +94,17 @@ const Registro = () => {
     }
 
     const reviewNameUser = (userName: string) => {
-        var route = DB_ROUTES.users.namesUser._this + "/" + userName;
-        Database.evalueteRouteExistMin(route, userName, (exist: boolean, obj: any) => {
+        var nickTemName = userName.toLowerCase();
+        var route = DB_ROUTES.users.namesUser._this + "/" + nickTemName;
+        Database.evalueteRouteExistMin(route, nickTemName, (exist: boolean, obj: any) => {
             console.log(exist, obj, route)
             if (exist) {
-                serRepeatUser({ find: false, repeat: true })
+                serRepeatUser({ find: false, repeat: true });
             } else {
                 serRepeatUser({ find: false, repeat: false });
             }
-        })
+        });
+
     }
 
     const redirectGoogle = () => {
@@ -98,6 +113,34 @@ const Registro = () => {
 
     const redirectIndex = () => {
 
+        if (!repeatUser.repeat &&
+            name != "" &&
+            email != "" &&
+            edad != "" &&
+            genero != "" &&
+            pass === confirmpass) {
+
+
+            if (account == "local") {
+                UserFirebase.createUser(null, email, "local", name, pass);
+                UserFirebase.createUserInformation(parseInt(edad), genero, nickName,
+                    () => {
+                        if (UserFirebase.user.registerComplete == true) {
+                            Store.dispatch({ type: changeSessionActive, payload: "active" });
+                            setGoToIndex(true);
+                        }
+                    });
+            } else if (account == "google") {
+                UserFirebase.createUserInformation(parseInt(edad), genero, nickName,
+                    () => {
+                        if (UserFirebase.user.registerComplete == true) {
+                            Store.dispatch({ type: changeSessionActive, payload: "active" });
+                            setGoToIndex(true);
+                        }
+                    });
+            }
+
+        }
     }
 
     useEffect(() => {
@@ -128,6 +171,8 @@ const Registro = () => {
                 setName(user_name);
                 setEmail(user_email);
                 setAccount(user_account);
+            } else {
+                setGoToIndex(true);
             }
         }
 
@@ -142,10 +187,11 @@ const Registro = () => {
     }, [])
 
     return <div className="Registro">
-        <div className="Registro__container w8 h10 z-depth-2">
-            <div className="row w9">
+        {goToIndex && <Redirect to="/" />}
+        <div className="Registro__container ws12 wm8 hs0 hm10 z-depth-2">
+            <div className="row ws12 wm9">
                 <div className="col s12">
-                    <h3>Has parte de nuestra comunidad</h3>
+                    <h5>Has parte de nuestra comunidad</h5>
                 </div>
                 <div className="section input-field col s12 m6" ref={refName}>
                     <i className="material-icons prefix">assignment_ind</i>
@@ -177,8 +223,8 @@ const Registro = () => {
                     <i className="material-icons prefix">account_circle</i>
                     <select defaultValue="" onChange={onChangeGenero}>
                         <option value="">¿Cuál es tu genero?</option>
-                        <option value="1">Masculino</option>
-                        <option value="2">Femenino</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
                         <option value="3">Otro</option>
                     </select>
                     <label>Genero</label>
@@ -195,17 +241,17 @@ const Registro = () => {
                 </div>
 
                 {account == "local" && <>
-                    <div className="section input-field col s6">
+                    <div className="section input-field col s12 m6">
                         <i className="material-icons prefix">lock_outline</i>
                         <input id="password"
                             onChange={onChangePass}
                             type="password" defaultValue={""} />
                         <label >Contraseña</label>
                     </div>
-                    <div className="section input-field col s6">
+                    <div className="section input-field col s12 m6">
                         <i className="material-icons prefix">lock_outline</i>
                         <input id="password"
-                            onChange={onChangePass}
+                            onChange={onChangeConfirPass}
                             type="password" defaultValue={""} />
                         <label >Confirmar contraseña</label>
                     </div>
@@ -214,20 +260,22 @@ const Registro = () => {
 
 
 
-                <div className="input-field col s12 m6" onClick={redirectIndex}>
+                <div className={"input-field col s12" + (registeComplete != "1" ? " m6" : " m12")
+                } onClick={redirectIndex}>
                     <a href="#" className="btn waves-effect waves-light col large s12">Register</a>
-
                 </div>
 
-                <div className="input-field col s12 m6">
-
-                    <a href="#"
-                        onClick={redirectGoogle}
-                        className="btn red waves-effect waves-light col large s12">
-                        <i className="material-icons left">email</i>
+                {registeComplete != "1" &&
+                    <div className="input-field col s12 m6">
+                        <a href="#"
+                            onClick={redirectGoogle}
+                            className="btn red waves-effect waves-light col large s12">
+                            <i className="material-icons left">email</i>
                             Registrase con Google
                             </a>
-                </div>
+                    </div>
+                }
+
 
             </div>
 

@@ -2,6 +2,7 @@ class EventManager<T> {
     fLoaf: any = {};
 
     getEvent(id: T, load: () => void) {
+        console.log("EL EVENTO:>>  ", this.fLoaf)
         if (this.fLoaf[id] == null) {
             this.fLoaf[id] = {
                 accion: [],
@@ -23,6 +24,7 @@ class EventManager<T> {
 
     exeEvent(id: T) {
         if (this.fLoaf[id]) {
+            this.fLoaf[id].load = true;
             this.fLoaf[id].accion.forEach((action: any) => {
                 if (action.exe == false) {
                     action.exe = true;
@@ -30,12 +32,12 @@ class EventManager<T> {
                 }
             });
         } else {
-            if (this.fLoaf[id] == null) {
-                this.fLoaf[id] = {
-                    accion: [],
-                    load: true
-                }
+
+            this.fLoaf[id] = {
+                accion: [],
+                load: true
             }
+
         }
     }
 }

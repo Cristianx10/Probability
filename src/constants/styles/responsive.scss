@@ -2,13 +2,460 @@
 /* No media query since this is the default in Bootstrap */
 
 /* Small devices (tablets, 768px and up) */
-@media (min-width: 768px) {
+@media (max-width: 599px) {
+    .col.hs0,
+    .hs0,
+    .row.hs0 {
+        height: auto;
+    }
+
+    .col.hs1,
+    .hs1,
+    .row.hs1 {
+        height: 8%;
+    }
+
+    .col.hs2,
+    .hs2,
+    .row.hs2 {
+        height: 16%;
+    }
+
+    .col.hs3,
+    .hs3,
+    .row.hs3 {
+        height: 25%;
+    }
+
+    .col.hs4,
+    .hs4,
+    .row.hs4 {
+        height: 33%;
+    }
+
+    .col.hs5,
+    .hs5,
+    .row.hs5 {
+        height: 41%;
+    }
+
+    .col.hs6,
+    .hs6,
+    .row.hs6 {
+        height: 50%;
+    }
+
+    .col.hs7,
+    .hs7,
+    .row.hs7 {
+        height: 58%;
+    }
+
+    .col.hs8,
+    .hs8,
+    .row.hs8 {
+        height: 66%;
+    }
+
+    .col.hs9,
+    .hs9,
+    .row.hs9 {
+        height: 75%;
+    }
+
+    .col.hs10,
+    .hs10,
+    .row.hs10 {
+        height: 83%;
+    }
+
+    .col.hs11,
+    .hs11,
+    .row.hs11 {
+        height: 91%;
+    }
+
+    .col.hs12,
+    .hs12,
+    .row.hs12 {
+        height: 100%;
+    }
+
+    .col.ws1,
+    .ws1,
+    .row.ws1 {
+        width: 8%;
+    }
+
+    .col.ws2,
+    .ws2,
+    .row.ws2 {
+        width: 16%;
+    }
+
+    .col.ws3,
+    .ws3,
+    .row.ws3 {
+        width: 25%;
+    }
+
+    .col.ws4,
+    .ws4,
+    .row.ws4 {
+        width: 33%;
+    }
+
+    .col.ws5,
+    .ws5,
+    .row.ws5 {
+        width: 41%;
+    }
+
+    .col.ws6,
+    .ws6,
+    .row.ws6 {
+        width: 50%;
+    }
+
+    .col.ws7,
+    .ws7,
+    .row.ws7 {
+        width: 58%;
+    }
+
+    .col.ws8,
+    .ws8,
+    .row.ws8 {
+        width: 66%;
+    }
+
+    .col.ws9,
+    .ws9,
+    .row.ws9 {
+        width: 75%;
+    }
+
+    .col.ws10,
+    .ws10,
+    .row.ws10 {
+        width: 83%;
+    }
+
+    .col.ws11,
+    .ws11,
+    .row.ws11 {
+        width: 91%;
+    }
+
+    .col.ws12,
+    .ws12,
+    .row.ws12 {
+        width: 100%;
+    }
 }
 
 /* Medium devices (desktops, 992px and up) */
-@media (min-width: 992px) {
+@media (min-width: 600px) {
+    .col.hm0,
+    .hm0,
+    .row.hm0 {
+        height: auto;
+    }
+
+    .col.hm1,
+    .hm1,
+    .row.hm1 {
+        height: 8%;
+    }
+
+    .col.hm2,
+    .hm2,
+    .row.hm2 {
+        height: 16%;
+    }
+
+    .col.hm3,
+    .hm3,
+    .row.hm3 {
+        height: 25%;
+    }
+
+    .col.hm4,
+    .hm4,
+    .row.hm4 {
+        height: 33%;
+    }
+
+    .col.hm5,
+    .hm5,
+    .row.hm5 {
+        height: 41%;
+    }
+
+    .col.hm6,
+    .hm6,
+    .row.hm6 {
+        height: 50%;
+    }
+
+    .col.hm7,
+    .hm7,
+    .row.hm7 {
+        height: 58%;
+    }
+
+    .col.hm8,
+    .hm8,
+    .row.hm8 {
+        height: 66%;
+    }
+
+    .col.hm9,
+    .hm9,
+    .row.hm9 {
+        height: 75%;
+    }
+
+    .col.hm10,
+    .hm10,
+    .row.hm10 {
+        height: 83%;
+    }
+
+    .col.hm11,
+    .hm11,
+    .row.hm11 {
+        height: 91%;
+    }
+
+    .col.hm12,
+    .hm12,
+    .row.hm12 {
+        height: 100%;
+    }
+
+    .col.wm1,
+    .wm1,
+    .row.wm1 {
+        width: 8%;
+    }
+
+    .col.wm2,
+    .wm2,
+    .row.wm2 {
+        width: 16%;
+    }
+
+    .col.wm3,
+    .wm3,
+    .row.wm3 {
+        width: 25%;
+    }
+
+    .col.wm4,
+    .wm4,
+    .row.wm4 {
+        width: 33%;
+    }
+
+    .col.wm5,
+    .wm5,
+    .row.wm5 {
+        width: 41%;
+    }
+
+    .col.wm6,
+    .wm6,
+    .row.wm6 {
+        width: 50%;
+    }
+
+    .col.wm7,
+    .wm7,
+    .row.wm7 {
+        width: 58%;
+    }
+
+    .col.wm8,
+    .wm8,
+    .row.wm8 {
+        width: 66%;
+    }
+
+    .col.wm9,
+    .wm9,
+    .row.wm9 {
+        width: 75%;
+    }
+
+    .col.wm10,
+    .wm10,
+    .row.wm10 {
+        width: 83%;
+    }
+
+    .col.wm11,
+    .wm11,
+    .row.wm11 {
+        width: 91%;
+    }
+
+    .col.wm12,
+    .wm12,
+    .row.wm12 {
+        width: 100%;
+    }
 }
 
 /* Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
+@media (min-width: 992px) {
+    .col.hl0,
+    .hl0,
+    .row.hl0 {
+        height: auto;
+    }
+
+    .col.hl1,
+    .hl1,
+    .row.hl1 {
+        height: 8%;
+    }
+
+    .col.hl2,
+    .hl2,
+    .row.hl2 {
+        height: 16%;
+    }
+
+    .col.hl3,
+    .hl3,
+    .row.hl3 {
+        height: 25%;
+    }
+
+    .col.hl4,
+    .hl4,
+    .row.hl4 {
+        height: 33%;
+    }
+
+    .col.hl5,
+    .hl5,
+    .row.hl5 {
+        height: 41%;
+    }
+
+    .col.hl6,
+    .hl6,
+    .row.hl6 {
+        height: 50%;
+    }
+
+    .col.hl7,
+    .hl7,
+    .row.hl7 {
+        height: 58%;
+    }
+
+    .col.hl8,
+    .hl8,
+    .row.hl8 {
+        height: 66%;
+    }
+
+    .col.hl9,
+    .hl9,
+    .row.hl9 {
+        height: 75%;
+    }
+
+    .col.hl10,
+    .hl10,
+    .row.hl10 {
+        height: 83%;
+    }
+
+    .col.hl11,
+    .hl11,
+    .row.hl11 {
+        height: 91%;
+    }
+
+    .col.hl12,
+    .hl12,
+    .row.hl12 {
+        height: 100%;
+    }
+
+    .col.wl1,
+    .wl1,
+    .row.wl1 {
+        width: 8%;
+    }
+
+    .col.wl2,
+    .wl2,
+    .row.wl2 {
+        width: 16%;
+    }
+
+    .col.wl3,
+    .wl3,
+    .row.wl3 {
+        width: 25%;
+    }
+
+    .col.wl4,
+    .wl4,
+    .row.wl4 {
+        width: 33%;
+    }
+
+    .col.wl5,
+    .wl5,
+    .row.wl5 {
+        width: 41%;
+    }
+
+    .col.wl6,
+    .wl6,
+    .row.wl6 {
+        width: 50%;
+    }
+
+    .col.wl7,
+    .wl7,
+    .row.wl7 {
+        width: 58%;
+    }
+
+    .col.wl8,
+    .wl8,
+    .row.wl8 {
+        width: 66%;
+    }
+
+    .col.wl9,
+    .wl9,
+    .row.wl9 {
+        width: 75%;
+    }
+
+    .col.wl10,
+    .wl10,
+    .row.wl10 {
+        width: 83%;
+    }
+
+    .col.wl11,
+    .wl11,
+    .row.wl11 {
+        width: 91%;
+    }
+
+    .col.wl12,
+    .wl12,
+    .row.wl12 {
+        width: 100%;
+    }
 }

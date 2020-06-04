@@ -3,31 +3,16 @@ import firebase from "firebase";
 import Firebase from '../firebase';
 import Database from '../Database/Database';
 import DB_ROUTES from '../Database/Database_Routes';
+import EventManager from '../../helpers/EventsManager';
+import Store from "../../../redux/Store";
+import { type as changeSessionActive } from "../../../redux/user/actions/changeSessionActive";
 
 import User from './User';
-import Store from "../../../redux/Store";
+import { IFirebase_User, IFirebase_User_Information } from './User';
 
-import { type as changeSessionActive } from "../../../redux/user/actions/changeSessionActive";
-import EventManager from '../../helpers/EventsManager';
 
-export interface IFirebase_User {
-    UID: string;
-    email: string;
-    account: string;
-    name: string;
-    registerComplete: boolean;
-    date: {
-        creation: number;
-    }
-}
 
-interface IFirebase_User_Information {
-    information: {
-        name: string;
-        age: number;
-        genre: string;
-    }
-}
+
 
 class user_firebase {
 
@@ -50,13 +35,16 @@ class user_firebase {
         this.loginGoogle(() => { });
     }
 
-    login(user: string, password: string) {
-        this.auth.signInWithEmailAndPassword(user, password);
+    login(user: string, password: string, load: () => void) {
+        this.auth.signInWithEmailAndPassword(user, password).then(() => {
+            load();
+        });
     }
 
-    register(user: string, password: string) {
+    register(user: string, password: string, load: () => void) {
         this.auth.createUserWithEmailAndPassword(user, password).then((result) => {
             if (result.user) {
+                load();
                 var uid = result.user.uid;
             }
         }).catch((error) => {
@@ -74,17 +62,15 @@ class user_firebase {
         if (this.userFirebase) {
 
             //var name = user.displayName;
-            var email = this.userFirebase.email;
+            // var email = this.userFirebase.email;
             var UID = this.userFirebase.uid;
 
 
             var route = DB_ROUTES.users.data._this + "/" + UID;
-            var localRoute = route;
-            console.log("BUSCANDO EN> ", route)
+
             Database.readBrachOnlyDatabase(route, (user) => {
                 var usuario: IFirebase_User = user.val();
                 if (usuario) {
-                    console.log("ESTE ES MI USUARIOS ", usuario)
                     this.user.getUserProps(usuario);
                     load(usuario.registerComplete);
                 }
@@ -98,7 +84,7 @@ class user_firebase {
             if (user) {
                 this.userFirebase = user;
                 var name = user.displayName || "";
-                var email = user.email;
+                var email = user.email || "";
                 var UID = user.uid;
 
                 var route = DB_ROUTES.users.data._this + "/" + UID;
@@ -118,12 +104,13 @@ class user_firebase {
         });
     }
 
-    logout() {
-        this.auth.signOut().then(function () {
-            // Sign-out successful.
-            alert("Seccion cerrada")
+    logout(load: (exit: boolean) => void) {
+        this.auth.signOut().then(() => {
+            this.userFirebase = undefined;
+            this.user = new User();
+            load(true);
         }).catch(function (error) {
-            // An error happened.
+            load(false)
         });
     }
 
@@ -133,6 +120,7 @@ class user_firebase {
                 if (user) {
                     // User is signed in.
                     this.userFirebase = user;
+                    Store.dispatch({ type: changeSessionActive, payload: "active" });
                     load && load(true);
                     this.event.exeEvent("loadUserFirebase");
                 } else {
@@ -148,8 +136,14 @@ class user_firebase {
             if (this.userFirebase) {
                 var route = DB_ROUTES.users.data._this + "/" + this.userFirebase.uid;
                 Database.readBrachOnlyDatabase(route, (data) => {
-                    var u = data.val() as User;
-                    this.user.getUserProps(u);
+                    var u = data.val() as User | undefined;
+                    if(u){
+                        this.user.getUserProps(u);
+                        if(u.information){
+                            this.user.getPropInfomation(u.information);
+                        }
+                    }
+
                     this.event.exeEvent("loadUserDatabase");
                     load();
                 });
@@ -167,33 +161,87 @@ class user_firebase {
         }
     }
 
-    createUser(uid: string, email: string | null, account: "local" | "google", name: string) {
+    createUserLocal() {
 
-        var correo = email == null ? "required" : email;
+    }
 
-        var userFirebaseDatabse: IFirebase_User = {
-            UID: uid,
-            registerComplete: false,
-            email: correo,
-            name,
-            account,
-            date: {
-                creation: (new Date()).getTime()
+    createUser(uid: string | null, email: string, account: "local" | "google", name: string, pass?: string) {
+
+        const registerDatabase = () => {
+            //Genera un UID random
+            var routeDatabe = DB_ROUTES.users.data._this;
+
+            //Seleccion de UID segun el metodo de inicio de sessión
+            var temUID = account == "google" ?
+                uid || ""
+                : Database.generateUID(routeDatabe);
+
+            var userFirebaseDatabse: IFirebase_User = {
+                UID: temUID,
+                registerComplete: false,
+                email,
+                name,
+                account,
+                date: {
+                    creation: (new Date()).getTime()
+                }
             }
+
+            var route = routeDatabe + "/" + temUID;
+
+            Database.writeDatabase(route, userFirebaseDatabse, () => {
+                this.user.getUserProps(userFirebaseDatabse);
+                this.event.exeEvent("loadUserDatabase");
+                if (account == "google") {
+                    this.event.exeEvent("redirectGoogle");
+                }
+            });
+
+            //TENER EN CUENTA MAYUSCULAS
+            /*    Database.writeDatabase(DB_ROUTES.users.namesUser._this + "/" + 
+                    , )*/
         }
 
-        var temUID = account == "google" ? `/${userFirebaseDatabse.UID}` : "";
+        if (pass) {
+            this.register(email, pass, () => {
+                registerDatabase();
+            });
+        } else {
+            registerDatabase();
+        }
 
-        var route = DB_ROUTES.users.data._this + temUID;
+    }
 
-        Database.writeDatabase(route, userFirebaseDatabse, () => {
-            this.user.getUserProps(userFirebaseDatabse);
-            this.event.exeEvent("redirectGoogle");
-        });
 
-        //TENER EN CUENTA MAYUSCULAS
-        /*    Database.writeDatabase(DB_ROUTES.users.namesUser._this + "/" + 
-                , )*/
+    createUserInformation(age: number, genre: string, nick: string, load?: () => void) {
+        this.event.getEvent("loadUserDatabase", () => {
+
+            //Genera un UID random
+            var routeDatabe = DB_ROUTES.users.data._this;
+            var routeNick = DB_ROUTES.users.namesUser._this;
+
+            var information = {
+                age,
+                genre,
+                nick
+            }
+
+            var route = routeDatabe + "/" + this.user.UID;
+
+            Database.updateDatabase(route,
+                {
+                    registerComplete: true,
+                    information
+                }
+                , () => {
+                    this.user.registerComplete = true;
+                    this.user.getPropInfomation(information);
+                    Database.writeDatabase(routeNick + "/" + nick, this.user.UID);
+                    Database.writeDatabase(routeNick + "/" + (nick.toLowerCase()), this.user.UID);
+                    load && load()
+                });
+        })
+
     }
 
 

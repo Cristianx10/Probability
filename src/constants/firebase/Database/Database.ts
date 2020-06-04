@@ -79,17 +79,30 @@ class database__Object {
         });
     }
 
-    writeDatabase(url: string, objeto: Object, load?: () => void) {
-        Firebase.database().ref(url).set(objeto, load);
+    updateDatabase<T>(url: string, objeto: T, load?: (obj: T) => void) {
+        Firebase.database().ref(url).update(objeto, () => {
+            load && load(objeto);
+        });
     }
 
-    writeDatabasePush(url: string, objeto: any) {
+    writeDatabase<T>(url: string, objeto: T, load?: (obj: T) => void) {
+        Firebase.database().ref(url).set(objeto, () => {
+            load && load(objeto);
+        });
+    }
+
+
+    generateUID(url: string) {
+        return Firebase.database().ref(url).push().key || "";
+    }
+
+    writeDatabasePush<T>(url: string, objeto: T & { UID: string }, load?: (obj: T) => void) {
         let UID: string = Firebase.database().ref(url).push().key || "";
         objeto.UID = UID;
         var resultObject = JSON.parse(JSON.stringify(objeto));
 
         if (UID !== "") {
-            this.writeDatabase(`${url}/${UID}`, resultObject);
+            this.writeDatabase(`${url}/${UID}`, resultObject, load);
         }
     }
 
