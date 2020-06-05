@@ -8,27 +8,36 @@ import ServerGlobal from '../../../../constants/multiplayer/ServerGlobal';
 import prop from '../../../../constants/multiplayer/prop';
 import CJSScene from '../../../../constants/createjs/Scene/createjsScene';
 import CJSSceneManager from '../../../../constants/createjs/Scene/createjsSceneManager';
+import TS_Blackjack from '../ts/TS_Blackjack';
+import Sofia from '../../../../constants/Sofia/Sofia';
 
 class juego extends CJSScene {
 
     barajaManager: BarajaManger;
     crupier: Jugador;
     jugadores: Jugador[];
+    blackjack: TS_Blackjack;
 
-    servidor: ServerGlobal;
-    movidas: prop<number>;
+    logic: Sofia;
 
-    constructor(sceneManager: CJSSceneManager) {
-        super(sceneManager);
+    servidor?: ServerGlobal;
+    //  movidas: prop<number>;
 
-        this.servidor = new ServerGlobal();
+    constructor(blackjack: TS_Blackjack) {
+        super(blackjack.scene);
+        this.blackjack = blackjack;
+        
+        this.logic = new Sofia("crupier");
 
-        this.movidas = this.servidor.setProp("movidas", 0);
+        this.blackjack.event.getEvent("loadServer", () => {
+            if (this.blackjack.server) {
 
 
-        console.log(this.servidor)
+            }
+        })
 
-        this.movidas.set(this.movidas.get() + 1);
+
+
 
         this.isLoadFiles = true;
 

@@ -79,6 +79,34 @@ class database__Object {
         });
     }
 
+    readBrachDatabase(ruta: string, load: (snapshots: firebase.database.DataSnapshot) => void) {
+        var refDataBase = this.db.ref(ruta);
+        refDataBase.on('value', (snapshots: firebase.database.DataSnapshot) => {
+            load(snapshots);
+        });
+    }
+
+    readBrachDatabaseFilter(ruta: string, filter: string, value: string | number | boolean, load: (snapshots: firebase.database.DataSnapshot) => void) {
+        var refDataBase = this.db.ref(ruta);
+        refDataBase.orderByChild(filter).equalTo(value).on('value', (snapshots: firebase.database.DataSnapshot) => {
+            load(snapshots);
+        });
+    }
+
+    readBrachDatabaseLimitChildN(ruta: string, limit: number, load: (snapshots: firebase.database.DataSnapshot) => void) {
+        var refDataBase = this.db.ref(ruta);
+        refDataBase.limitToFirst(limit).on('value', (snapshots: firebase.database.DataSnapshot) => {
+            load(snapshots);
+        });
+    }
+
+    readBrachDatabaseLimitChildNOnly(ruta: string, limit: number, load: (snapshots: firebase.database.DataSnapshot) => void) {
+        var refDataBase = this.db.ref(ruta);
+        refDataBase.limitToFirst(limit).once('value', (snapshots: firebase.database.DataSnapshot) => {
+            load(snapshots);
+        });
+    }
+
     updateDatabase<T>(url: string, objeto: T, load?: (obj: T) => void) {
         Firebase.database().ref(url).update(objeto, () => {
             load && load(objeto);
@@ -106,9 +134,9 @@ class database__Object {
         }
     }
 
-    writeDatabasePushWithOutUID(url: string, objeto: any) {
+    writeDatabasePushWithOutUID(url: string, objeto: any, load: () => void) {
         var resultObject = JSON.parse(JSON.stringify(objeto));
-        Firebase.database().ref(url).push(resultObject);
+        Firebase.database().ref(url).push(resultObject, load);
     }
 
     /*

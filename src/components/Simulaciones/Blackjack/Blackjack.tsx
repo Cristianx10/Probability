@@ -5,6 +5,7 @@ import "./Blackjack.scss";
 import Multiplayer from "./pages/Multiplayer/Multiplayer";
 import Solitario from "./pages/Solitario/Solitario";
 import Simulacion from "./pages/Simulacion/Simulacion";
+import MultiplayerManager from '../../../constants/multiplayer/MultiplayerManager';
 
 
 interface INav {
@@ -12,8 +13,10 @@ interface INav {
 }
 
 
-export const NavegationContext = createContext<{ setPage: (page: "Inicio" | "Mutiplayer" | "Solitario" | "Simulacion") => void }>({
-    setPage: (page: "Inicio" | "Mutiplayer" | "Solitario" | "Simulacion") => { }
+export const NavegationContext = createContext<{ setPage: (page: "Inicio" | "Mutiplayer" | "Solitario" | "Simulacion") => void, server: MultiplayerManager }>({
+    setPage: (page: "Inicio" | "Mutiplayer" | "Solitario" | "Simulacion") => { },
+    server: new MultiplayerManager()
+
 });
 
 var initNavigation: INav = {
@@ -29,7 +32,8 @@ const Blackjack = () => {
 
     // const [page, setPage] = useState<"inicio">("inicio");
 
-    const navegation = useContext(NavegationContext);
+    //const navegation = useContext(NavegationContext);
+    const [server] = useState(new MultiplayerManager());
     const [state, dispatch] = useReducer(reducer, initNavigation);
 
     var viewPage = <></>;
@@ -52,7 +56,7 @@ const Blackjack = () => {
     }
 
     return (
-        <NavegationContext.Provider value={{ setPage: dispatch }}>
+        <NavegationContext.Provider value={{ setPage: dispatch, server }}>
             <div className="Blackjack" >
                 {viewPage}
             </div>

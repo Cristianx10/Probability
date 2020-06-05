@@ -41,11 +41,11 @@ class user_firebase {
         });
     }
 
-    register(user: string, password: string, load: () => void) {
+    register(user: string, password: string, load: (value: firebase.auth.UserCredential) => void) {
         this.auth.createUserWithEmailAndPassword(user, password).then((result) => {
             if (result.user) {
-                load();
-                var uid = result.user.uid;
+                //  var uid = result.user.uid;
+                load(result);
             }
         }).catch((error) => {
             throw new Error(error.message);
@@ -64,7 +64,6 @@ class user_firebase {
             //var name = user.displayName;
             // var email = this.userFirebase.email;
             var UID = this.userFirebase.uid;
-
 
             var route = DB_ROUTES.users.data._this + "/" + UID;
 
@@ -96,7 +95,6 @@ class user_firebase {
                         UserFirebase.createUser(UID, email, "google", name);
                     }
                     load(user, exist);
-
                 });
 
             }
@@ -134,12 +132,15 @@ class user_firebase {
     getUserChangeDatabase(load: () => void) {
         this.event.getEvent("loadUserFirebase", () => {
             if (this.userFirebase) {
+
                 var route = DB_ROUTES.users.data._this + "/" + this.userFirebase.uid;
+
                 Database.readBrachOnlyDatabase(route, (data) => {
                     var u = data.val() as User | undefined;
-                    if(u){
+                    if (u) {
+
                         this.user.getUserProps(u);
-                        if(u.information){
+                        if (u.information) {
                             this.user.getPropInfomation(u.information);
                         }
                     }
@@ -167,14 +168,14 @@ class user_firebase {
 
     createUser(uid: string | null, email: string, account: "local" | "google", name: string, pass?: string) {
 
-        const registerDatabase = () => {
+        const registerDatabase = (uidServer?: string) => {
             //Genera un UID random
             var routeDatabe = DB_ROUTES.users.data._this;
 
             //Seleccion de UID segun el metodo de inicio de sessión
             var temUID = account == "google" ?
                 uid || ""
-                : Database.generateUID(routeDatabe);
+                : uidServer || "";
 
             var userFirebaseDatabse: IFirebase_User = {
                 UID: temUID,
@@ -203,8 +204,11 @@ class user_firebase {
         }
 
         if (pass) {
-            this.register(email, pass, () => {
-                registerDatabase();
+            this.register(email, pass, (result) => {
+                if (result && result.user) {
+                    var uid = result.user.uid;
+                    registerDatabase(uid);
+                }
             });
         } else {
             registerDatabase();

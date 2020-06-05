@@ -18,9 +18,11 @@ var users_information = users + "/information";
 
 
 var servidor = app + "servidor";
+var servidor_namesUsers = servidor + "/namesUsers"
 var servidor_blackjack = servidor + "/blackjack";
 var servidor_blackjack_private = servidor_blackjack + "/private";
 var servidor_blackjack_public = servidor_blackjack + "/public";
+var servidor_blackjack_namesUsers = servidor_blackjack + "/namesUsers";
 
 
 var simulations = app + "simulations";
@@ -41,8 +43,15 @@ const DB_ROUTES = {
     },
     servidor: {
         _this: servidor,
+        namesUsers: {
+            _this: servidor_namesUsers
+        },
         blackjack: {
+            _thisN: "blackjack",
             _this: servidor_blackjack,
+            namesUsers: {
+                _this: servidor_blackjack_namesUsers
+            },
             private: {
                 _this: servidor_blackjack_private
 

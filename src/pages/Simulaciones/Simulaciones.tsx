@@ -1,7 +1,7 @@
 import React from "react";
 
 const Simulaciones = () => {
-    return <div>
+    return <div className="Simulaciones">
         <h1>Simulaciones</h1>
     </div>
 }

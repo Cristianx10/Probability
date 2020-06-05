@@ -18,7 +18,7 @@ class Sofia {
                 this.logicas[f.id] = [];
             }
             this.logicas[f.id].push(f);
-        })
+        });
 
     }
 
